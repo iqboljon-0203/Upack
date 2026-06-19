@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Menu, X, ArrowRight, LogIn, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,7 +35,7 @@ export default function MobileMenu() {
     };
   }, [isOpen]);
 
-  const menuVariants = {
+  const menuVariants: Variants = {
     closed: {
       opacity: 0,
       y: -20,
@@ -56,7 +56,7 @@ export default function MobileMenu() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     closed: { opacity: 0, y: 20 },
     open: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
   };

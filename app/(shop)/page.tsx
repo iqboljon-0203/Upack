@@ -12,7 +12,7 @@ import { useLanguage } from "@/context/LanguageContext";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } }
 };
 
 const staggerContainer = {
@@ -296,9 +296,10 @@ export default function Home() {
             className="grid grid-cols-1 md:grid-cols-4 gap-6"
           >
             {featuresData.cards.map((feature: any, idx: number) => {
-              const IconComponent = {
+              const iconsMap: Record<string, any> = {
                 Box, Truck, ShieldCheck, Leaf, Star, Clock, CheckCircle, Package
-              }[feature.icon as keyof typeof Box] || Box;
+              };
+              const IconComponent = iconsMap[feature.icon] || Box;
 
               return (
                 <motion.div key={idx} variants={fadeUp} className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-premium hover:-translate-y-1 transition-all duration-300 text-center flex flex-col items-center group">
