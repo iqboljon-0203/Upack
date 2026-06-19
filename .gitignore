@@ -39,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# temp/scraping files
+*.py
+*.log
+api_recovery.txt
+log_dump.txt
+mappings_output.txt
+extracted_mappings.json
+temp_mock.json
+find_mappings.js
+fix_images.js
+generate_mock_data.js
+recovery_*.log
