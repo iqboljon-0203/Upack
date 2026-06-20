@@ -24,15 +24,38 @@ export default function CheckoutPage() {
   const [comment, setComment] = useState("");
   const [coordinates, setCoordinates] = useState<number[] | null>(null);
 
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
   useEffect(() => {
     setMounted(true);
-    if (items.length === 0 && mounted) {
-      router.push("/cart");
+    
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+        if (!data.authenticated) {
+          toast.error(language === 'uz' ? "Buyurtma berish uchun tizimga kirishingiz shart!" : "Для оформления заказа необходимо войти в систему!");
+          router.push("/login?redirect=/checkout");
+        } else {
+          setCheckingAuth(false);
+        }
+      } catch (err) {
+        console.error(err);
+        router.push("/login");
+      }
     }
-  }, [items, mounted, router]);
 
-  if (!mounted || items.length === 0) {
-    return <div className="container mx-auto px-6 py-20">{language === 'uz' ? 'Yuklanmoqda...' : 'Загрузка...'}</div>;
+    if (mounted) {
+      if (items.length === 0) {
+        router.push("/cart");
+      } else {
+        checkAuth();
+      }
+    }
+  }, [items, mounted, router, language]);
+
+  if (!mounted || items.length === 0 || checkingAuth) {
+    return <div className="container mx-auto px-6 py-20 text-center font-bold text-slate-500">{language === 'uz' ? 'Yuklanmoqda...' : 'Загрузка...'}</div>;
   }
 
   const totalPrice = getTotalPrice();

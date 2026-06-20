@@ -149,7 +149,17 @@ export default function AdminProducts() {
                     <td className="p-4 font-bold text-slate-900">{product.name}</td>
                     <td className="p-4">
                       <span className="inline-block px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md">
-                        {categories.find(c => c.id === product.category_id)?.name || 'Noma\'lum'}
+                        {(() => {
+                          const cat = categories.find(c => c.id === product.category_id);
+                          if (!cat) return 'Noma\'lum';
+                          const name = cat.name_uz || cat.name || cat.id;
+                          if (cat.parent_id) {
+                            const parent = categories.find(p => p.id === cat.parent_id);
+                            const parentName = parent ? (parent.name_uz || parent.name) : '';
+                            return parentName ? `${parentName} > ${name}` : name;
+                          }
+                          return name;
+                        })()}
                       </span>
                     </td>
                     <td className="p-4 font-black text-slate-900">{product.price.toLocaleString('ru-RU')} so'm</td>

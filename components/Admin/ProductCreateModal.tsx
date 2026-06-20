@@ -46,6 +46,46 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
     }
   }, [isOpen, initialData, categories]);
 
+  const buildCategoryTree = () => {
+    const parentCategories = categories.filter(c => !c.parent_id);
+    const subCategories = categories.filter(c => c.parent_id);
+
+    const tree: Array<{ id: string; name_uz: string; name_ru: string; isSub: boolean }> = [];
+
+    parentCategories.forEach(parent => {
+      tree.push({
+        id: parent.id,
+        name_uz: parent.name_uz || parent.name || '',
+        name_ru: parent.name_ru || parent.name || '',
+        isSub: false
+      });
+
+      const children = subCategories.filter(child => child.parent_id === parent.id);
+      children.forEach(child => {
+        tree.push({
+          id: child.id,
+          name_uz: child.name_uz || child.name || '',
+          name_ru: child.name_ru || child.name || '',
+          isSub: true
+        });
+      });
+    });
+
+    // Also include any subcategories whose parent wasn't found (safety check)
+    subCategories.forEach(child => {
+      if (!tree.some(t => t.id === child.id)) {
+        tree.push({
+          id: child.id,
+          name_uz: child.name_uz || child.name || '',
+          name_ru: child.name_ru || child.name || '',
+          isSub: true
+        });
+      }
+    });
+
+    return tree;
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -151,8 +191,10 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
                 className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all"
               >
                 <option value="" disabled>Tanlang</option>
-                {categories.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                {buildCategoryTree().map(c => (
+                  <option key={c.id} value={c.id}>
+                    {c.isSub ? `— ${c.name_uz} (${c.name_ru})` : `${c.name_uz} (${c.name_ru})`}
+                  </option>
                 ))}
               </select>
             </div>

@@ -148,7 +148,7 @@ export default function KatalogPage() {
               <p>{language === 'uz' ? 'Hech narsa topilmadi' : 'Ничего не найдено'}</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-6">
               {visibleProducts.map((product) => (
               <motion.div 
                 key={product.id}
@@ -160,7 +160,7 @@ export default function KatalogPage() {
                   const cartItem = items.find(item => item.id === product.id);
                   return (
                     <>
-                      <div className="w-full h-48 bg-slate-100 shrink-0 relative group-hover:scale-105 transition-transform duration-500">
+                      <div className="w-full h-36 sm:h-48 bg-slate-100 shrink-0 relative group-hover:scale-105 transition-transform duration-500">
                         <Link href={`/mahsulot/${product.id}`} className="w-full h-full block">
                           <img 
                             src={product.image} 
@@ -180,13 +180,13 @@ export default function KatalogPage() {
                           <Heart size={18} fill={isFavorite(product.id) ? "currentColor" : "none"} className={isFavorite(product.id) ? "text-error" : ""} />
                         </button>
                       </div>
-                      <div className="p-5 flex flex-col flex-1">
+                      <div className="p-3 sm:p-5 flex flex-col flex-1">
                         <Link href={`/mahsulot/${product.id}`}>
-                          <h3 className="font-bold text-slate-900 mb-2 line-clamp-2 hover:text-primary-600 transition-colors">
+                          <h3 className="font-bold text-slate-900 mb-2 line-clamp-2 hover:text-primary-600 transition-colors text-sm sm:text-base">
                             {product.name}
                           </h3>
                         </Link>
-                        <p className="text-sm text-slate-500 mb-4 line-clamp-2">
+                        <p className="text-sm text-slate-500 mb-4 hidden sm:line-clamp-2">
                           {product.full_desc}
                         </p>
                         <div className="mt-auto flex items-center justify-between">

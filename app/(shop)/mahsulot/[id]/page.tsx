@@ -239,10 +239,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       {relatedProducts.length > 0 && (
         <div className="mt-16">
           <h2 className="text-2xl font-bold text-slate-900 mb-6">{language === 'uz' ? "O'xshash mahsulotlar" : 'Похожие товары'}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {relatedProducts.map((p) => (
               <Link key={p.id} href={`/mahsulot/${p.id}`} className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm hover:shadow-md hover:border-primary-200 transition-all group flex flex-col h-full">
-                <div className="w-full h-40 bg-slate-50 rounded-xl mb-4 overflow-hidden">
+                <div className="w-full h-32 sm:h-40 bg-slate-50 rounded-xl mb-4 overflow-hidden">
                   <img 
                     src={p.image} 
                     alt={p.name} 

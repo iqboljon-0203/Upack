@@ -145,22 +145,13 @@ export default function MobileMenu() {
                 {language === 'uz' ? 'Profilga o\'tish' : 'Перейти в профиль'}
               </Link>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="flex-1 py-4 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all text-lg"
-                >
-                  <LogIn size={20} />
-                  {language === 'uz' ? 'Tizimga kirish' : 'Войти'}
-                </Link>
-                <Link
-                  href="/register"
-                  className="flex-1 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-600/20 text-lg"
-                >
-                  <UserPlus size={20} />
-                  {language === 'uz' ? "Ro'yxatdan o'tish" : 'Регистрация'}
-                </Link>
-              </>
+              <Link
+                href="/login"
+                className="flex-1 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-600/20 text-lg"
+              >
+                <LogIn size={20} />
+                {language === 'uz' ? 'Tizimga kirish' : 'Войти'}
+              </Link>
             )}
           </motion.div>
         </motion.div>

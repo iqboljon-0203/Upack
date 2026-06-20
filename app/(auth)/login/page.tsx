@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ShieldCheck, Send, Loader2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, ShieldCheck, Send, Loader2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function LoginPage() {
@@ -98,13 +99,22 @@ export default function LoginPage() {
   const isCodeComplete = code.every((d) => d !== "");
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
+    <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-12">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="w-full max-w-md"
       >
+        {/* Back button */}
+        <Link 
+          href="/" 
+          className="inline-flex items-center gap-2 text-slate-500 hover:text-primary-600 transition-colors mb-6 font-bold text-sm group"
+        >
+          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+          {language === 'uz' ? 'Bosh sahifaga qaytish' : 'На главную'}
+        </Link>
+
         {/* Card */}
         <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 p-8 sm:p-10">
           
