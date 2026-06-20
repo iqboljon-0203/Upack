@@ -81,7 +81,7 @@ export default function LoginPage() {
             refresh_token: data.supabaseSession.refresh_token,
           });
         }
-        window.location.href = "/";
+        window.location.href = "/profile";
       } else {
         setError(data.message || (language === 'uz' ? "Kod noto'g'ri yoki muddati o'tgan." : "Неверный код или срок его действия истек."));
         setCode(["", "", "", "", "", ""]);

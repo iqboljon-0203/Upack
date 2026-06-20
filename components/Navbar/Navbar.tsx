@@ -18,9 +18,18 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
+  const [user, setUser] = useState<any>(null);
   
   useEffect(() => {
     setMounted(true);
+    fetch("/api/auth/me")
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          setUser(data.user);
+        }
+      })
+      .catch(console.error);
   }, []);
 
   const { items: cartItems } = useCartStore();
@@ -181,15 +190,28 @@ export default function Navbar() {
             </motion.div>
           </Link>
 
-          <Link href="/login">
-            <motion.button 
-              whileHover={{ scale: 1.02 }} 
-              whileTap={{ scale: 0.98 }} 
-              className="hidden lg:block ml-2 bg-primary-600 hover:bg-primary-700 text-white shadow-sm shadow-primary-600/20 px-5 py-2.5 rounded-lg font-bold text-sm transition-all"
-            >
-              {t('nav.login')}
-            </motion.button>
-          </Link>
+          {mounted && user ? (
+            <Link href="/profile">
+              <motion.button 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.98 }} 
+                className="hidden lg:flex items-center gap-2 ml-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-5 py-2.5 rounded-lg font-bold text-sm transition-all"
+              >
+                <User size={16} className="text-primary-600" />
+                <span>{user.firstName || 'Profil'}</span>
+              </motion.button>
+            </Link>
+          ) : (
+            <Link href="/login">
+              <motion.button 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.98 }} 
+                className="hidden lg:block ml-2 bg-primary-600 hover:bg-primary-700 text-white shadow-sm shadow-primary-600/20 px-5 py-2.5 rounded-lg font-bold text-sm transition-all"
+              >
+                {t('nav.login')}
+              </motion.button>
+            </Link>
+          )}
           <MobileMenu />
         </div>
 

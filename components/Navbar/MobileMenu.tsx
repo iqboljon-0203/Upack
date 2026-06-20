@@ -13,10 +13,19 @@ export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    fetch("/api/auth/me")
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          setUser(data.user);
+        }
+      })
+      .catch(console.error);
+  }, [isOpen]);
 
   // Close menu when route changes
   useEffect(() => {
@@ -127,20 +136,32 @@ export default function MobileMenu() {
             variants={itemVariants}
             className="container mx-auto px-6 pb-12 pt-6 shrink-0 flex flex-col sm:flex-row gap-4"
           >
-            <Link
-              href="/login"
-              className="flex-1 py-4 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all text-lg"
-            >
-              <LogIn size={20} />
-              {language === 'uz' ? 'Tizimga kirish' : 'Войти'}
-            </Link>
-            <Link
-              href="/register"
-              className="flex-1 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-600/20 text-lg"
-            >
-              <UserPlus size={20} />
-              {language === 'uz' ? "Ro'yxatdan o'tish" : 'Регистрация'}
-            </Link>
+            {mounted && user ? (
+              <Link
+                href="/profile"
+                className="flex-1 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-600/20 text-lg"
+              >
+                <LogIn size={20} />
+                {language === 'uz' ? 'Profilga o\'tish' : 'Перейти в профиль'}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="flex-1 py-4 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all text-lg"
+                >
+                  <LogIn size={20} />
+                  {language === 'uz' ? 'Tizimga kirish' : 'Войти'}
+                </Link>
+                <Link
+                  href="/register"
+                  className="flex-1 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-600/20 text-lg"
+                >
+                  <UserPlus size={20} />
+                  {language === 'uz' ? "Ro'yxatdan o'tish" : 'Регистрация'}
+                </Link>
+              </>
+            )}
           </motion.div>
         </motion.div>
       )}

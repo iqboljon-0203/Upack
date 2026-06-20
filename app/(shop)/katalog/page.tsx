@@ -32,22 +32,20 @@ export default function KatalogPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .order('created_at', { ascending: false });
+        const res = await fetch("/api/products");
+        const data = await res.json();
         
-        if (error) throw error;
+        if (data.error) throw new Error(data.error);
         setProductsData(data || []);
       } catch (error) {
         console.error("Error fetching products:", error);
-        toast.error("Mahsulotlarni yuklashda xatolik yuz berdi");
+        toast.error(language === 'uz' ? "Mahsulotlarni yuklashda xatolik yuz berdi" : "Ошибка при загрузке товаров");
       } finally {
         setLoading(false);
       }
     }
     fetchProducts();
-  }, []);
+  }, [language]);
 
   useEffect(() => {
     setVisibleCount(12);
