@@ -11,8 +11,8 @@ export default function PrivacyContentAdmin() {
   const [data, setData] = useState({
     title_uz: "Maxfiylik Siyosati",
     title_ru: "Политика конфиденциальности",
-    desc_uz: "Ushbu Maxfiylik Siyosati UPack.uz veb-sayti tomonidan foydalanuvchilarning shaxsiy ma'lumotlari qanday yig'ilishi, foydalanilishi va himoya qilinishini belgilaydi. Biz sizning maxfiyligingizni hurmat qilamiz va ma'lumotlaringiz xavfsizligini ta'minlashga intilamiz.",
-    desc_ru: "Данная Политика конфиденциальности определяет, как веб-сайт UPack.uz собирает, использует и защищает личную информацию пользователей. Мы уважаем вашу конфиденциальность и стремимся обеспечить безопасность ваших данных.",
+    desc_uz: "Ushbu Maxfiylik Siyosati UPackB2B.uz veb-sayti tomonidan foydalanuvchilarning shaxsiy ma'lumotlari qanday yig'ilishi, foydalanilishi va himoya qilinishini belgilaydi. Biz sizning maxfiyligingizni hurmat qilamiz va ma'lumotlaringiz xavfsizligini ta'minlashga intilamiz.",
+    desc_ru: "Данная Политика конфиденциальности определяет, как веб-сайт UPackB2B.uz собирает, использует и защищает личную информацию пользователей. Мы уважаем вашу конфиденциальность и стремимся обеспечить безопасность ваших данных.",
     
     sec1_title_uz: "1. Qanday ma'lumotlarni yig'amiz?",
     sec1_title_ru: "1. Какую информацию мы собираем?",
@@ -31,8 +31,8 @@ export default function PrivacyContentAdmin() {
 
     sec4_title_uz: "4. Bog'lanish",
     sec4_title_ru: "4. Контакты",
-    sec4_content_uz: "Agar ushbu maxfiylik siyosati bo'yicha savollaringiz bo'lsa, biz bilan quyidagi manzil orqali bog'lanishingiz mumkin:\nTelefon: +998 90 901 39 38\nPochta: info@upack.uz",
-    sec4_content_ru: "Если у вас есть вопросы по поводу этой политики конфиденциальности, вы можете связаться с нами по следующим контактам:\nТелефон: +998 90 901 39 38\nПочта: info@upack.uz"
+    sec4_content_uz: "Agar ushbu maxfiylik siyosati bo'yicha savollaringiz bo'lsa, biz bilan quyidagi manzil orqali bog'lanishingiz mumkin:\nTelefon: +998 90 901 39 38\nPochta: info@upackb2b.uz",
+    sec4_content_ru: "Если у вас есть вопросы по поводу этой политики конфиденциальности, вы можете связаться с нами по следующим контактам:\nТелефон: +998 90 901 39 38\nПочта: info@upackb2b.uz"
   });
 
   useEffect(() => {

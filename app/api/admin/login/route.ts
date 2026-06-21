@@ -35,18 +35,22 @@ export async function POST(req: NextRequest) {
     // Create response
     const response = NextResponse.json({ success: true });
     
-    // Token yaroqlilik muddati: "Eslab qolish" bo'lsa 30 kun, aks holda sessiya
-    const maxAge = rememberMe ? 60 * 60 * 24 * 30 : undefined;
-    
-    // Set cookie
-    response.cookies.set({
+    // Set cookie option details
+    const cookieOptions: any = {
       name: 'admin_token',
       value: data.session.access_token,
       httpOnly: true,
       path: '/',
       secure: process.env.NODE_ENV === 'production',
-      maxAge,
-    });
+      sameSite: 'lax',
+    };
+
+    if (rememberMe) {
+      cookieOptions.maxAge = 60 * 60 * 24 * 30; // 30 days
+      cookieOptions.expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
+    }
+    
+    response.cookies.set(cookieOptions);
 
     return response;
   } catch (error) {

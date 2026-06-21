@@ -25,28 +25,28 @@ export default function PrivacyPage() {
   const p = data || {
     title_uz: "Maxfiylik Siyosati",
     title_ru: "Политика конфиденциальности",
-    desc_uz: "Ushbu Maxfiylik Siyosati UPack.uz veb-sayti tomonidan foydalanuvchilarning shaxsiy ma'lumotlari qanday yig'ilishi, foydalanilishi va himoya qilinishini belgilaydi. Biz sizning maxfiyligingizni hurmat qilamiz va ma'lumotlaringiz xavfsizligini ta'minlashga intilamiz.",
-    desc_ru: "Данная Политика конфиденциальности определяет, как веб-сайт UPack.uz собирает, использует и защищает личную информацию пользователей. Мы уваем вашу конфиденциальность и стремимся обеспечить безопасность ваших данных.",
+    desc_uz: "Ushbu Maxfiylik Siyosati UPackB2B.uz veb-sayti tomonidan foydalanuvchilarning shaxsiy ma'lumotlari qanday yig'ilishi, foydalanilishi va himoya qilinishini belgilaydi. Biz sizning maxfiyligingizni hurmat qilamiz va ma'lumotlaringiz xavfsizligini ta'minlashga intilamiz.",
+    desc_ru: "Данная Политика конфиденциальности определяет, как веб-сайт UPackB2B.uz собирает, использует и защищает личную информацию пользователей. Мы уважаем вашу конфиденциальность и стремимся обеспечить безопасность ваших данных.",
     
     sec1_title_uz: "1. Qanday ma'lumotlarni yig'amiz?",
     sec1_title_ru: "1. Какую информацию мы собираем?",
     sec1_content_uz: "Saytdan foydalanish va buyurtma berish jarayonida biz quyidagi ma'lumotlarni so'rashimiz mumkin:\n- Ismingiz va familiyangiz\n- Aloqa ma'lumotlari (Telefon raqami, elektron pochta)\n- Yetkazib berish manzili\n- Buyurtma tarixi va saytdagi xatti-harakatlaringiz",
     sec1_content_ru: "В процессе использования сайта и оформления заказа мы можем запросить следующую информацию:\n- Ваше имя и фамилия\n- Контактные данные (Номер телефона, электронная почта)\n- Адрес доставки\n- История заказов и ваши действия на сайте",
-
+ 
     sec2_title_uz: "2. Ma'lumotlardan qanday foydalanamiz?",
     sec2_title_ru: "2. Как мы используем информацию?",
     sec2_content_uz: "Yig'ilgan ma'lumotlar quyidagi maqsadlarda ishlatiladi:\n- Buyurtmangizni qayta ishlash va yetkazib berish\n- Siz bilan bog'lanish (Buyurtma holati haqida xabar berish)\n- Saytimizni yanada yaxshilash va xizmat sifatini oshirish\n- Yangi aksiyalar va chegirmalar haqida xabar berish (ixtiyoriy)",
     sec2_content_ru: "Собранная информация используется в следующих целях:\n- Обработка и доставка вашего заказа\n- Связь с вами (уведомление о статусе заказа)\n- Улучшение нашего сайта и повышение качества обслуживания\n- Уведомление о новых акциях и скидках (по желанию)",
-
+ 
     sec3_title_uz: "3. Ma'lumotlar xavfsizligi",
     sec3_title_ru: "3. Безопасность данных",
     sec3_content_uz: "Biz sizning ma'lumotlaringizni ruxsatsiz kirish, o'zgartirish, oshkor qilish yoki yo'q qilishdan himoya qilish uchun tegishli texnik va tashkiliy xavfsizlik choralarini ko'ramiz. Sizning ma'lumotlaringiz uchinchi shaxslarga sotilmaydi yoki ijaraga berilmaydi.",
     sec3_content_ru: "Мы принимаем соответствующие технические и организационные меры безопасности для защиты вашей информации от несанкционированного доступа, изменения, раскрытия или уничтожения. Ваша информация не продается и не сдается в аренду третьим лицам.",
-
+ 
     sec4_title_uz: "4. Bog'lanish",
     sec4_title_ru: "4. Контакты",
-    sec4_content_uz: "Agar ushbu maxfiylik siyosati bo'yicha savollaringiz bo'lsa, biz bilan quyidagi manzil orqali bog'lanishingiz mumkin:\nTelefon: +998 90 901 39 38\nPochta: info@upack.uz",
-    sec4_content_ru: "Если у вас есть вопросы по поводу этой политики конфиденциальности, вы можете связаться с нами по следующим контактам:\nТелефон: +998 90 901 39 38\nПочта: info@upack.uz"
+    sec4_content_uz: "Agar ushbu maxfiylik siyosati bo'yicha savollaringiz bo'lsa, biz bilan quyidagi manzil orqali bog'lanishingiz mumkin:\nTelefon: +998 90 901 39 38\nPochta: info@upackb2b.uz",
+    sec4_content_ru: "Если у вас есть вопросы по поводу этой политики конфиденциальности, вы можете связаться с нами по следующим контактам:\nТелефон: +998 90 901 39 38\nПочта: info@upackb2b.uz"
   };
 
   const renderBulletList = (content: string) => {

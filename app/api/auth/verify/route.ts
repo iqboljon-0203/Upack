@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    const email = `tg_${result.chatId}@upack.uz`;
+    const email = `tg_${result.chatId}@upackb2b.uz`;
     const password = `upack_${result.chatId}_secure_pass_2026`; // deterministik parol
 
     let { data: authData, error: authError } = await supabaseAdmin.auth.signInWithPassword({

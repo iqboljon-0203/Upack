@@ -11,16 +11,22 @@ import { useLanguage } from "@/context/LanguageContext";
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const { language } = useLanguage();
+  const cleanName = (name: string) => name.replace(/&#39;/g, "'").replace(/&apos;/g, "'");
   const [product, setProduct] = useState<any>(null);
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
   const { items, addItem, updateQuantity } = useCartStore();
+  const cartLimits = useCartStore((state) => state.cartLimits);
   const { toggleFavorite, isFavorite } = useFavoritesStore();
   
   // These rely on product, so initialize them after fetching
   const [localQuantity, setLocalQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+
+  useEffect(() => {
+    useCartStore.getState().fetchCartLimits();
+  }, []);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -104,7 +110,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         <span className="text-slate-300">/</span>
         <Link href="/katalog" className="hover:text-primary-600 transition-colors">{language === 'uz' ? 'Katalog' : 'Каталог'}</Link>
         <span className="text-slate-300">/</span>
-        <span className="text-slate-900 line-clamp-1">{product.name}</span>
+        <span className="text-slate-900 line-clamp-1">{cleanName(product.name)}</span>
       </div>
 
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col md:flex-row">
@@ -113,7 +119,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <div className="w-full aspect-square flex items-center justify-center mb-6">
             <img 
               src={gallery[activeImage]} 
-              alt={product.name} 
+              alt={cleanName(product.name)} 
               className="max-w-full max-h-full rounded-2xl shadow-lg object-contain transition-all duration-300"
               onError={(e) => { e.currentTarget.src = '/logo.svg' }}
             />
@@ -145,7 +151,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             {product.category}
           </div>
           <h1 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-4 leading-tight">
-            {product.name}
+            {cleanName(product.name)}
           </h1>
           <div className="text-3xl font-black text-primary-600 mb-6">
             {product.price.toLocaleString('ru-RU')} {language === 'uz' ? "so'm" : 'сум'} <span className="text-sm font-medium text-slate-400">/ {product.unit}</span>
@@ -160,26 +166,36 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
           <div className="mt-auto space-y-6">
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Quantity Selector */}
-              <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl h-14 w-full sm:w-auto shrink-0 px-2">
-                <button 
-                  onClick={() => setLocalQuantity(Math.max(product.minOrder, localQuantity - 1))}
-                  className="w-12 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
-                >
-                  <Minus size={20} />
-                </button>
-                <div className="w-16 text-center font-bold text-slate-900 select-none">
-                  {localQuantity}
-                </div>
-                <button 
-                  onClick={() => setLocalQuantity(localQuantity + 1)}
-                  className="w-12 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
-                >
-                  <Plus size={20} />
-                </button>
-              </div>
+              {(() => {
+                const limits = cartLimits || { globalLimit: 100, productLimits: {} };
+                const productLimit = limits.productLimits[product.id] !== undefined ? limits.productLimits[product.id] : limits.globalLimit;
+                return (
+                  <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl h-14 w-full sm:w-auto shrink-0 px-2">
+                    <button 
+                      onClick={() => setLocalQuantity(Math.max(product.minOrder, localQuantity - 1))}
+                      className="w-12 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
+                    >
+                      <Minus size={20} />
+                    </button>
+                    <div className="w-16 text-center font-bold text-slate-900 select-none">
+                      {localQuantity}
+                    </div>
+                    <button 
+                      onClick={() => {
+                        if (localQuantity >= productLimit) {
+                          toast.warning(`Maksimal buyurtma miqdori: ${productLimit} ta`);
+                        } else {
+                          setLocalQuantity(localQuantity + 1);
+                        }
+                      }}
+                      className="w-12 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
+                    >
+                      <Plus size={20} />
+                    </button>
+                  </div>
+                );
+              })()}
 
-              {/* Add to Cart Button */}
               <button 
                 onClick={handleAddToCart}
                 className="flex-1 bg-primary-600 hover:bg-primary-700 text-white shadow-lg shadow-primary-600/30 h-14 rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
@@ -245,12 +261,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 <div className="w-full h-32 sm:h-40 bg-slate-50 rounded-xl mb-4 overflow-hidden">
                   <img 
                     src={p.image} 
-                    alt={p.name} 
+                    alt={cleanName(p.name)} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1558000143-a61254bf5228?q=80&w=800&auto=format&fit=crop' }}
                   />
                 </div>
-                <h3 className="font-bold text-slate-900 text-sm mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">{p.name}</h3>
+                <h3 className="font-bold text-slate-900 text-sm mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">{cleanName(p.name)}</h3>
                 <div className="mt-auto font-black text-primary-600">{p.price.toLocaleString('ru-RU')} {language === 'uz' ? "so'm" : 'сум'}</div>
               </Link>
             ))}

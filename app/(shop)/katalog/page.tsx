@@ -19,10 +19,12 @@ const CATEGORIES = [
 
 export default function KatalogPage() {
   const { language, t } = useLanguage();
+  const cleanName = (name: string) => name.replace(/&#39;/g, "'").replace(/&apos;/g, "'");
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("newest");
   const [visibleCount, setVisibleCount] = useState(12);
+  const [mounted, setMounted] = useState(false);
   const { items, addItem, updateQuantity, removeItem } = useCartStore();
   const { toggleFavorite, isFavorite } = useFavoritesStore();
 
@@ -52,6 +54,8 @@ export default function KatalogPage() {
   }, [activeCategory, searchQuery, sortOrder]);
 
   useEffect(() => {
+    setMounted(true);
+    useCartStore.getState().fetchCartLimits();
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const cat = params.get('category');
@@ -157,7 +161,7 @@ export default function KatalogPage() {
                 className="bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-lg transition-all group flex flex-col"
               >
                 {(() => {
-                  const cartItem = items.find(item => item.id === product.id);
+                  const cartItem = mounted ? items.find(item => item.id === product.id) : undefined;
                   return (
                     <>
                       <div className="w-full h-36 sm:h-48 bg-slate-100 shrink-0 relative group-hover:scale-105 transition-transform duration-500">
@@ -183,22 +187,22 @@ export default function KatalogPage() {
                       <div className="p-3 sm:p-5 flex flex-col flex-1">
                         <Link href={`/mahsulot/${product.id}`}>
                           <h3 className="font-bold text-slate-900 mb-2 line-clamp-2 hover:text-primary-600 transition-colors text-sm sm:text-base">
-                            {product.name}
+                            {cleanName(product.name)}
                           </h3>
                         </Link>
                         <p className="text-sm text-slate-500 mb-4 hidden sm:line-clamp-2">
                           {product.full_desc}
                         </p>
-                        <div className="mt-auto flex items-center justify-between">
-                          <div>
-                            <div className="text-xs text-slate-400 mb-1">{language === 'uz' ? 'Narxi' : 'Цена'} ({product.unit})</div>
-                            <div className="font-black text-lg text-primary-600">
+                        <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                          <div className="shrink-0">
+                            <div className="text-xs text-slate-400 mb-0.5">{language === 'uz' ? 'Narxi' : 'Цена'} ({product.unit})</div>
+                            <div className="font-black text-base sm:text-lg text-primary-600 leading-tight">
                               {product.price.toLocaleString('ru-RU')} {language === 'uz' ? "so'm" : 'сум'}
                             </div>
                           </div>
                           
                           {cartItem ? (
-                            <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl h-10 overflow-hidden shrink-0">
+                            <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl h-10 overflow-hidden w-full sm:w-auto shrink-0">
                               <button 
                                 onClick={() => {
                                   if (cartItem.quantity <= 1) {
@@ -211,7 +215,7 @@ export default function KatalogPage() {
                               >
                                 <Minus size={16} />
                               </button>
-                              <div className="px-2 text-center font-bold text-slate-900 select-none text-sm min-w-[2.5rem]">
+                              <div className="px-2 text-center font-bold text-slate-900 select-none text-sm flex-1 sm:min-w-[2.5rem]">
                                 {cartItem.quantity}
                               </div>
                               <button 
@@ -235,7 +239,7 @@ export default function KatalogPage() {
                                 });
                                 toast.success(language === 'uz' ? `${product.name} savatga qo'shildi!` : `${product.name} добавлено в корзину!`);
                               }}
-                              className="w-10 h-10 bg-primary-50 text-primary-600 hover:bg-primary-600 hover:text-white rounded-full flex items-center justify-center transition-colors shrink-0"
+                              className="w-10 h-10 bg-primary-50 text-primary-600 hover:bg-primary-600 hover:text-white rounded-full flex items-center justify-center transition-colors shrink-0 self-end sm:self-auto"
                               title={language === 'uz' ? "Savatga qo'shish" : "Добавить в корзину"}
                             >
                               <ShoppingCart size={18} />

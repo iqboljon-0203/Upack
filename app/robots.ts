@@ -13,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: "https://upack.uz/sitemap.xml",
+    sitemap: "https://upackb2b.uz/sitemap.xml",
   };
 }

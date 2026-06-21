@@ -11,7 +11,7 @@ export default function Footer() {
     desc_uz: "O'zbekistondagi eng yirik B2B platforma. Biznesingiz uchun sifatli qadoqlash vositalari.",
     desc_ru: "Крупнейшая B2B платформа в Узбекистане. Качественные упаковочные материалы для вашего бизнеса.",
     phone: "+998 90 901 39 38",
-    email: "info@upack.uz",
+    email: "info@upackb2b.uz",
     address_uz: "Toshkent shahri, Yunusobod tumani",
     address_ru: "г. Ташкент, Юнусабадский район",
     instagram: "https://www.instagram.com/upackuz?igsh=ZmJ0emdlZHRrb2J",

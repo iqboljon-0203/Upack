@@ -13,7 +13,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
 });
 
 async function createAdmin() {
-  const email = 'admin@upack.uz';
+  const email = 'admin@upackb2b.uz';
   const password = 'upack_admin_2026';
 
   console.log(`Creating admin user: ${email}`);

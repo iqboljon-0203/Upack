@@ -14,6 +14,7 @@ export default function CartPage() {
 
   useEffect(() => {
     setMounted(true);
+    useCartStore.getState().fetchCartLimits();
   }, []);
 
   if (!mounted) {
