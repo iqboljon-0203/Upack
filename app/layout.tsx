@@ -51,6 +51,10 @@ export const metadata: Metadata = {
     icon: "/logo.svg",
     apple: "/logo.svg",
   },
+  verification: {
+    google: "YOUR_GOOGLE_VERIFICATION_CODE", // Google Search Console verification code
+    yandex: "YOUR_YANDEX_VERIFICATION_CODE", // Yandex Webmaster verification code
+  },
 };
 
 import NextTopLoader from 'nextjs-toploader';
