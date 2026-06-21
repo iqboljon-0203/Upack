@@ -36,9 +36,7 @@ export async function POST(req: NextRequest) {
     const response = NextResponse.json({ success: true });
     
     // Set cookie option details
-    const cookieOptions: any = {
-      name: 'admin_token',
-      value: data.session.access_token,
+    const options: any = {
       httpOnly: true,
       path: '/',
       secure: process.env.NODE_ENV === 'production',
@@ -46,11 +44,11 @@ export async function POST(req: NextRequest) {
     };
 
     if (rememberMe) {
-      cookieOptions.maxAge = 60 * 60 * 24 * 30; // 30 days
-      cookieOptions.expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
+      options.maxAge = 60 * 60 * 24 * 30; // 30 days
+      options.expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
     }
     
-    response.cookies.set(cookieOptions);
+    response.cookies.set('admin_token', data.session.access_token, options);
 
     return response;
   } catch (error) {

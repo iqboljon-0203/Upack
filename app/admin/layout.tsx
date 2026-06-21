@@ -14,7 +14,7 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isLoginPage = pathname === "/admin/login";
+  const isLoginPage = pathname === "/admin/login" || pathname === "/login" || pathname.endsWith("/login");
 
   if (isLoginPage) {
     return <>{children}</>;
@@ -48,9 +48,9 @@ export default function AdminLayout({
       <div className="flex flex-col gap-1 flex-1 py-6 px-4">
         <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 px-3">Boshqaruv paneli</p>
         {[
-          { href: "/admin", icon: LayoutDashboard, label: "Dashboard", active: pathname === "/admin" },
-          { href: "/admin/orders", icon: ShoppingBag, label: "Buyurtmalar", active: pathname.startsWith("/admin/orders") },
-          { href: "/admin/products", icon: Package, label: "Mahsulotlar", active: pathname.startsWith("/admin/products") }
+          { href: "/admin", icon: LayoutDashboard, label: "Dashboard", active: pathname === "/admin" || pathname === "/" },
+          { href: "/admin/orders", icon: ShoppingBag, label: "Buyurtmalar", active: pathname.startsWith("/admin/orders") || pathname.startsWith("/orders") },
+          { href: "/admin/products", icon: Package, label: "Mahsulotlar", active: pathname.startsWith("/admin/products") || pathname.startsWith("/products") }
         ].map((item, idx) => (
           <Link key={idx} href={item.href} onClick={() => setIsSidebarOpen(false)}>
             <motion.div 
@@ -67,19 +67,19 @@ export default function AdminLayout({
 
         <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 mb-2 px-3">Sayt Kontenti</p>
         {[
-          { href: "/admin/content/hero", icon: LayoutDashboard, label: "Bosh qism (Hero)", active: pathname.includes("/admin/content/hero") },
-          { href: "/admin/content/features", icon: Package, label: "Afzalliklar", active: pathname.includes("/admin/content/features") },
-          { href: "/admin/content/steps", icon: ShoppingBag, label: "Qadamlar", active: pathname.includes("/admin/content/steps") },
-          { href: "/admin/content/brands", icon: Settings, label: "Brendlar", active: pathname.includes("/admin/content/brands") },
-          { href: "/admin/content/reorder", icon: RefreshCw, label: "Qayta buyurtma", active: pathname.includes("/admin/content/reorder") },
-          { href: "/admin/content/categories", icon: Grid, label: "Kategoriyalar", active: pathname.includes("/admin/content/categories") },
-          { href: "/admin/content/faq", icon: HelpCircle, label: "FAQ (Savollar)", active: pathname.includes("/admin/content/faq") },
-          { href: "/admin/content/cta", icon: PhoneCall, label: "Namuna (CTA)", active: pathname.includes("/admin/content/cta") },
-          { href: "/admin/content/reviews", icon: MessageSquare, label: "Mijozlar fikrlari", active: pathname.includes("/admin/content/reviews") },
-          { href: "/admin/content/about", icon: Info, label: "Biz haqimizda", active: pathname.includes("/admin/content/about") },
-          { href: "/admin/content/delivery", icon: Truck, label: "Yetkazib berish", active: pathname.includes("/admin/content/delivery") },
-          { href: "/admin/content/privacy", icon: ShieldCheck, label: "Maxfiylik", active: pathname.includes("/admin/content/privacy") },
-          { href: "/admin/content/footer", icon: Layers, label: "Sayt tagligi (Footer)", active: pathname.includes("/admin/content/footer") }
+          { href: "/admin/content/hero", icon: LayoutDashboard, label: "Bosh qism (Hero)", active: pathname.includes("/content/hero") },
+          { href: "/admin/content/features", icon: Package, label: "Afzalliklar", active: pathname.includes("/content/features") },
+          { href: "/admin/content/steps", icon: ShoppingBag, label: "Qadamlar", active: pathname.includes("/content/steps") },
+          { href: "/admin/content/brands", icon: Settings, label: "Brendlar", active: pathname.includes("/content/brands") },
+          { href: "/admin/content/reorder", icon: RefreshCw, label: "Qayta buyurtma", active: pathname.includes("/content/reorder") },
+          { href: "/admin/content/categories", icon: Grid, label: "Kategoriyalar", active: pathname.includes("/content/categories") },
+          { href: "/admin/content/faq", icon: HelpCircle, label: "FAQ (Savollar)", active: pathname.includes("/content/faq") },
+          { href: "/admin/content/cta", icon: PhoneCall, label: "Namuna (CTA)", active: pathname.includes("/content/cta") },
+          { href: "/admin/content/reviews", icon: MessageSquare, label: "Mijozlar fikrlari", active: pathname.includes("/content/reviews") },
+          { href: "/admin/content/about", icon: Info, label: "Biz haqimizda", active: pathname.includes("/content/about") },
+          { href: "/admin/content/delivery", icon: Truck, label: "Yetkazib berish", active: pathname.includes("/content/delivery") },
+          { href: "/admin/content/privacy", icon: ShieldCheck, label: "Maxfiylik", active: pathname.includes("/content/privacy") },
+          { href: "/admin/content/footer", icon: Layers, label: "Sayt tagligi (Footer)", active: pathname.includes("/content/footer") }
         ].map((item, idx) => (
           <Link key={idx} href={item.href} onClick={() => setIsSidebarOpen(false)}>
             <motion.div 

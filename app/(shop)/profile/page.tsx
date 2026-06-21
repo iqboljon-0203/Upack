@@ -330,7 +330,26 @@ function OrdersList({ language }: { language: string }) {
           <div className="flex justify-between items-center border-b border-slate-200 pb-4 mb-4">
             <div>
               <p className="text-sm text-slate-500 mb-1">{new Date(order.created_at).toLocaleDateString()}</p>
-              <p className="font-bold text-slate-900">{language === 'uz' ? 'Holati:' : 'Статус:'} <span className="text-primary-600 capitalize">{order.status}</span></p>
+              <p className="font-bold text-slate-900">
+                {language === 'uz' ? 'Holati:' : 'Статус:'}{' '}
+                <span className="text-primary-600 font-extrabold">
+                  {language === 'uz' ? (
+                    order.status === 'pending' || order.status === 'new' ? 'Yangi' :
+                    order.status === 'processing' ? 'Jarayonda' :
+                    order.status === 'assembled' ? 'Yig\'ildi' :
+                    order.status === 'shipped' ? 'Chiqarildi' :
+                    order.status === 'completed' ? 'Bajarildi' :
+                    order.status === 'cancelled' ? 'Bekor qilindi' : order.status
+                  ) : (
+                    order.status === 'pending' || order.status === 'new' ? 'Новый' :
+                    order.status === 'processing' ? 'В обработке' :
+                    order.status === 'assembled' ? 'Собран' :
+                    order.status === 'shipped' ? 'Отправлен' :
+                    order.status === 'completed' ? 'Выполнен' :
+                    order.status === 'cancelled' ? 'Отменен' : order.status
+                  )}
+                </span>
+              </p>
             </div>
             <div className="text-right">
               <p className="text-sm text-slate-500 mb-1">{language === 'uz' ? 'Jami summa:' : 'Общая сумма:'}</p>

@@ -34,8 +34,7 @@ export default function AdminOrders() {
   useEffect(() => {
     fetchOrders();
   }, []);
-
-  const handleStatusChange = async (orderId: number, newStatus: string) => {
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
     try {
       const res = await fetch('/api/admin/orders', {
         method: 'PUT',
@@ -100,6 +99,8 @@ export default function AdminOrders() {
               <option value="all">Barcha holatlar</option>
               <option value="pending">Yangi (pending)</option>
               <option value="processing">Jarayonda</option>
+              <option value="assembled">Yig'ildi</option>
+              <option value="shipped">Chiqarildi</option>
               <option value="completed">Bajarildi</option>
               <option value="cancelled">Bekor qilindi</option>
             </select>
@@ -150,12 +151,16 @@ export default function AdminOrders() {
                         className={`text-xs font-bold px-2.5 py-1.5 rounded-md outline-none border border-transparent hover:border-slate-300 transition-colors cursor-pointer ${
                           order.status === 'pending' || order.status === 'new' ? 'bg-amber-100 text-amber-700' :
                           order.status === 'processing' ? 'bg-blue-100 text-blue-700' :
+                          order.status === 'assembled' ? 'bg-indigo-100 text-indigo-700' :
+                          order.status === 'shipped' ? 'bg-cyan-100 text-cyan-700' :
                           order.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
                           'bg-slate-100 text-slate-700'
                         }`}
                       >
                         <option value="pending">Yangi</option>
                         <option value="processing">Jarayonda</option>
+                        <option value="assembled">Yig'ildi</option>
+                        <option value="shipped">Chiqarildi</option>
                         <option value="completed">Bajarildi</option>
                         <option value="cancelled">Bekor qilindi</option>
                       </select>

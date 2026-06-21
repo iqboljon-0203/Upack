@@ -120,13 +120,17 @@ export default function OrderDetailsPage() {
               className={`px-4 py-2 text-sm font-bold rounded-xl outline-none cursor-pointer border-2 border-transparent hover:border-slate-200 transition-colors ${
                 order.status === 'pending' || order.status === 'new' ? 'bg-amber-100 text-amber-700' :
                 order.status === 'processing' ? 'bg-blue-100 text-blue-700' :
+                order.status === 'assembled' ? 'bg-indigo-100 text-indigo-700' :
+                order.status === 'shipped' ? 'bg-cyan-100 text-cyan-700' :
                 order.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
                 'bg-slate-100 text-slate-700'
               }`}
             >
               <option value="pending">Yangi (Pending)</option>
               <option value="processing">Jarayonda</option>
-              <option value="completed">Bajarildi</option>
+              <option value="assembled">Yig'ildi</option>
+              <option value="shipped">Chiqarildi</option>
+              <option value="completed">Tugatildi / Bajarildi</option>
               <option value="cancelled">Bekor qilindi</option>
             </select>
           </div>
@@ -241,10 +245,17 @@ export default function OrderDetailsPage() {
                         <span className={`text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${
                           hOrder.status === 'pending' || hOrder.status === 'new' ? 'bg-amber-100 text-amber-700' :
                           hOrder.status === 'processing' ? 'bg-blue-100 text-blue-700' :
+                          hOrder.status === 'assembled' ? 'bg-indigo-100 text-indigo-700' :
+                          hOrder.status === 'shipped' ? 'bg-cyan-100 text-cyan-700' :
                           hOrder.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
                           'bg-slate-100 text-slate-700'
                         }`}>
-                          {hOrder.status}
+                          {hOrder.status === 'pending' || hOrder.status === 'new' ? 'Yangi' :
+                           hOrder.status === 'processing' ? 'Jarayonda' :
+                           hOrder.status === 'assembled' ? 'Yig\'ildi' :
+                           hOrder.status === 'shipped' ? 'Chiqarildi' :
+                           hOrder.status === 'completed' ? 'Tugatildi' :
+                           hOrder.status === 'cancelled' ? 'Bekor qilindi' : hOrder.status}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-slate-500 mb-3 font-medium">

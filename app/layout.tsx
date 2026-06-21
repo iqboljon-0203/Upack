@@ -14,7 +14,9 @@ export const metadata: Metadata = {
   description: "UPackB2B.uz - B2B mijozlar uchun sifatli qadoqlash materiallari, bir martalik idishlar, qog'oz mahsulotlari va xo'jalik mollari yetkazib beruvchi ishonchli hamkor.",
   keywords: [
     "qadoqlash", "qadoqlash materiallari", "upack", "upackb2b.uz", "bir martalik idishlar", 
-    "xo'jalik mollari", "gofrakarton", "skotch", "paketlar", "maishiy kimyo", "toshkent qadoqlash", "upackb2b"
+    "xo'jalik mollari", "gofrakarton", "skotch", "paketlar", "maishiy kimyo", "toshkent qadoqlash", "upackb2b",
+    "odnorazovaya posuda", "odnorazovaya posuda optom", "odnorazovaya posuda tashkent", "bir martalik idishlar optom",
+    "bumajnie stakanchiki", "stakanchiki optom", "qog'oz stakanlar", "b2b qadoqlash", "upakovka optom"
   ],
   authors: [{ name: "UPack" }],
   creator: "UPack Team",
@@ -62,7 +64,7 @@ export default function RootLayout({
   return (
     <html lang="uz">
       <body className={jakarta.className}>
-        <NextTopLoader color="#0ea5e9" showSpinner={false} height={3} />
+        <NextTopLoader color="#008ca7" showSpinner={false} height={3} />
         <LanguageProvider>
           {children}
           <Toaster position="top-right" richColors />

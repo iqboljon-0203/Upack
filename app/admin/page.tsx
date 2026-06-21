@@ -157,11 +157,19 @@ export default function AdminDashboard() {
                   <td className="p-4 text-slate-500 font-medium">{new Date(order.created_at).toLocaleDateString()}</td>
                   <td className="p-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${
-                      order.status === 'Yangi' || order.status === 'pending' || order.status === 'new' ? 'bg-amber-100 text-amber-700' :
-                      order.status === 'Jarayonda' || order.status === 'processing' ? 'bg-blue-100 text-blue-700' :
-                      'bg-emerald-100 text-emerald-700'
+                      order.status === 'pending' || order.status === 'new' ? 'bg-amber-100 text-amber-700' :
+                      order.status === 'processing' ? 'bg-blue-100 text-blue-700' :
+                      order.status === 'assembled' ? 'bg-indigo-100 text-indigo-700' :
+                      order.status === 'shipped' ? 'bg-cyan-100 text-cyan-700' :
+                      order.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
+                      'bg-slate-100 text-slate-700'
                     }`}>
-                      {order.status}
+                      {order.status === 'pending' || order.status === 'new' ? 'Yangi' :
+                       order.status === 'processing' ? 'Jarayonda' :
+                       order.status === 'assembled' ? 'Yig\'ildi' :
+                       order.status === 'shipped' ? 'Chiqarildi' :
+                       order.status === 'completed' ? 'Bajarildi' :
+                       order.status === 'cancelled' ? 'Bekor qilindi' : order.status}
                     </span>
                   </td>
                   <td className="p-4 font-black text-slate-900">{order.total_price?.toLocaleString('ru-RU')} so'm</td>
