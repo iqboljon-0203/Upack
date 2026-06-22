@@ -213,6 +213,31 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "B2BBusiness",
+            "name": "UPack",
+            "url": "https://upackb2b.uz",
+            "logo": "https://upackb2b.uz/logo.svg",
+            "image": "https://upackb2b.uz/hero-bg.png",
+            "description": "O'zbekistonda B2B qadoqlash platformasi. Sifatli qadoqlash materiallari va bir martalik idishlar ulgurji savdosi.",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Toshkent",
+              "addressCountry": "UZ"
+            },
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "Mijozlarni qo'llab-quvvatlash",
+              "areaServed": "UZ",
+              "availableLanguage": ["Uzbek", "Russian"]
+            }
+          })
+        }}
+      />
       
       {/* Hero Section */}
       <section 

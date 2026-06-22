@@ -105,19 +105,19 @@ export default function OrderDetailsPage() {
       
       {/* Header and Back Button */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
+        <div className="w-full">
           <button 
             onClick={() => router.push('/admin/orders')} 
             className="flex items-center gap-2 text-slate-500 hover:text-primary-600 font-bold mb-4 transition-colors"
           >
             <ArrowLeft size={18} /> Barcha buyurtmalarga qaytish
           </button>
-          <div className="flex items-center gap-4">
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Buyurtma #{order.id.slice(0,8)}</h1>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Buyurtma #{order.id.slice(0,8)}</h1>
             <select 
               value={order.status}
               onChange={(e) => handleStatusChange(e.target.value)}
-              className={`px-4 py-2 text-sm font-bold rounded-xl outline-none cursor-pointer border-2 border-transparent hover:border-slate-200 transition-colors ${
+              className={`w-full sm:w-auto px-4 py-2.5 text-sm font-bold rounded-xl outline-none cursor-pointer border-2 border-transparent hover:border-slate-200 transition-colors ${
                 order.status === 'pending' || order.status === 'new' ? 'bg-amber-100 text-amber-700' :
                 order.status === 'processing' ? 'bg-blue-100 text-blue-700' :
                 order.status === 'assembled' ? 'bg-indigo-100 text-indigo-700' :
@@ -134,7 +134,7 @@ export default function OrderDetailsPage() {
               <option value="cancelled">Bekor qilindi</option>
             </select>
           </div>
-          <p className="text-slate-500 mt-2 font-medium">{new Date(order.created_at).toLocaleString('ru-RU')}</p>
+          <p className="text-slate-500 mt-2.5 font-medium text-sm">{new Date(order.created_at).toLocaleString('ru-RU')}</p>
         </div>
       </div>
 
@@ -179,32 +179,32 @@ export default function OrderDetailsPage() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-white text-slate-400 text-sm font-bold uppercase tracking-wider">
-                    <th className="p-6 border-b border-slate-100">Mahsulot</th>
-                    <th className="p-6 border-b border-slate-100 text-center">Miqdor</th>
-                    <th className="p-6 border-b border-slate-100 text-right">Narxi</th>
-                    <th className="p-6 border-b border-slate-100 text-right">Jami</th>
+                    <th className="p-4 sm:p-6 border-b border-slate-100">Mahsulot</th>
+                    <th className="p-4 sm:p-6 border-b border-slate-100 text-center">Miqdor</th>
+                    <th className="p-4 sm:p-6 border-b border-slate-100 text-right">Narxi</th>
+                    <th className="p-4 sm:p-6 border-b border-slate-100 text-right">Jami</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {items.length > 0 ? items.map((item) => (
                     <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="p-6 flex items-center gap-4">
+                      <td className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                         {item.products?.image ? (
-                          <div className="w-16 h-16 relative rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-white shadow-sm">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 relative rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-white shadow-sm">
                             <Image src={item.products.image} alt="img" fill className="object-contain p-1" />
                           </div>
                         ) : (
-                          <div className="w-16 h-16 relative rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 relative rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center">
                             <Package size={24} className="text-slate-300" />
                           </div>
                         )}
                         <div>
-                          <div className="font-bold text-slate-900 text-base">{item.products?.name || "O'chirilgan mahsulot"}</div>
+                          <div className="font-bold text-slate-900 text-sm sm:text-base line-clamp-2">{item.products?.name || "O'chirilgan mahsulot"}</div>
                         </div>
                       </td>
-                      <td className="p-6 text-center font-bold text-slate-700 text-base">{item.quantity} ta</td>
-                      <td className="p-6 text-right font-medium text-slate-500 text-base">{item.price?.toLocaleString('ru-RU')}</td>
-                      <td className="p-6 text-right font-black text-slate-900 text-lg">{(item.price * item.quantity).toLocaleString('ru-RU')} so'm</td>
+                      <td className="p-4 sm:p-6 text-center font-bold text-slate-700 text-sm sm:text-base">{item.quantity} ta</td>
+                      <td className="p-4 sm:p-6 text-right font-medium text-slate-500 text-sm sm:text-base">{item.price?.toLocaleString('ru-RU')}</td>
+                      <td className="p-4 sm:p-6 text-right font-black text-slate-900 text-base sm:text-lg">{(item.price * item.quantity).toLocaleString('ru-RU')} so'm</td>
                     </tr>
                   )) : (
                     <tr><td colSpan={4} className="p-8 text-center text-slate-400 font-medium">Mahsulotlar topilmadi</td></tr>

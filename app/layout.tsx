@@ -8,29 +8,32 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL("https://upackb2b.uz"),
   title: {
-    default: "UPack - Sifatli Qadoqlash va Gigiyena Yechimlari",
-    template: "%s | UPackB2B.uz"
+    default: "UPack - O'zbekistonda B2B Qadoqlash va Gigiyena Yechimlari",
+    template: "%s | UPack Toshkent"
   },
-  description: "UPackB2B.uz - B2B mijozlar uchun sifatli qadoqlash materiallari, bir martalik idishlar, qog'oz mahsulotlari va xo'jalik mollari yetkazib beruvchi ishonchli hamkor.",
+  description: "UPackB2B.uz - O'zbekiston, Toshkent bo'ylab B2B mijozlar uchun sifatli qadoqlash materiallari, bir martalik idishlar, qog'oz mahsulotlari ulgurji yetkazib beruvchi hamkor.",
   keywords: [
-    "qadoqlash", "qadoqlash materiallari", "upack", "upackb2b.uz", "bir martalik idishlar", 
+    "qadoqlash toshkent", "qadoqlash materiallari o'zbekiston", "upack", "upack uzbekistan", "upack toshkent", "bir martalik idishlar", 
     "xo'jalik mollari", "gofrakarton", "skotch", "paketlar", "maishiy kimyo", "toshkent qadoqlash", "upackb2b",
-    "odnorazovaya posuda", "odnorazovaya posuda optom", "odnorazovaya posuda tashkent", "bir martalik idishlar optom",
-    "bumajnie stakanchiki", "stakanchiki optom", "qog'oz stakanlar", "b2b qadoqlash", "upakovka optom"
+    "odnorazovaya posuda tashkent", "odnorazovaya posuda optom uzbekistan", "bir martalik idishlar optom toshkent",
+    "qog'oz stakanlar", "b2b qadoqlash o'zbekiston", "upakovka optom tashkent"
   ],
-  authors: [{ name: "UPack" }],
+  authors: [{ name: "UPack Uzbekistan" }],
   creator: "UPack Team",
   publisher: "UPack",
   robots: {
     index: true,
     follow: true,
   },
+  alternates: {
+    canonical: "https://upackb2b.uz",
+  },
   openGraph: {
     type: "website",
     locale: "uz_UZ",
     url: "https://upackb2b.uz",
     siteName: "UPackB2B.uz",
-    title: "UPack - Qadoqlash va Gigiyena Yechimlari",
+    title: "UPack - Toshkentda Qadoqlash va Gigiyena Yechimlari",
     description: "B2B va ulgurji mijozlar uchun ishonchli hamkor. Toshkent bo'ylab tez yetkazib berish xizmati.",
     images: [
       {
@@ -43,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "UPack - Qadoqlash Yechimlari",
+    title: "UPack - O'zbekistonda Qadoqlash Yechimlari",
     description: "B2B mijozlar uchun qadoqlash va gigiyena mahsulotlari ulgurji yetkazib beruvchisi.",
     images: ["/hero-bg.png"],
   },
