@@ -26,7 +26,7 @@ export default function FavoritesPage() {
   }
 
   const handleAddToCart = (product: any) => {
-    const fullProduct = productsData.find(p => p.id === product.id);
+    const fullProduct = productsData.find(p => p.id === product.id) as any;
     if (fullProduct) {
       const stepOpt = fullProduct.options?.find((o: any) => o.name === "Step");
       const step = stepOpt ? parseInt(stepOpt.values[0]) : 1;
