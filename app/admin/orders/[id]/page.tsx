@@ -24,7 +24,7 @@ export default function OrderDetailsPage() {
       setIsLoading(true);
       try {
         // 1. Fetch order details and items
-        const res = await fetch(`/api/admin/orders?id=${orderId}&items=true`);
+        const res = await fetch(`/api/admin/orders?id=${orderId}&items=true&t=${Date.now()}`, { cache: 'no-store' });
         const json = await res.json();
         
         if (json.success && json.data) {
@@ -33,7 +33,7 @@ export default function OrderDetailsPage() {
 
           // 2. Fetch history (other orders by this user)
           if (json.data.order.user_id) {
-            const historyRes = await fetch(`/api/admin/orders?historyUserId=${json.data.order.user_id}`);
+            const historyRes = await fetch(`/api/admin/orders?historyUserId=${json.data.order.user_id}&t=${Date.now()}`, { cache: 'no-store' });
             const historyJson = await historyRes.json();
             if (historyJson.success && historyJson.data) {
               setHistory(historyJson.data.filter((h: any) => h.id !== orderId));

@@ -16,7 +16,7 @@ export default function AdminOrders() {
   const fetchOrders = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/admin/orders');
+      const res = await fetch(`/api/admin/orders?t=${Date.now()}`, { cache: 'no-store' });
       const json = await res.json();
       if (json.success) {
         setOrders(json.data);
@@ -46,6 +46,8 @@ export default function AdminOrders() {
       
       if (json.success) {
         toast.success("Status o'zgartirildi");
+        // Update UI locally first for immediate feedback
+        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
         fetchOrders();
       } else {
         throw new Error(json.message);

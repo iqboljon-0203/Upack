@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { X, Upload, Save, Image as ImageIcon } from "lucide-react";
+import { X, Upload, Save, Image as ImageIcon, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 
@@ -16,7 +16,11 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
   const [categoryId, setCategoryId] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [stock, setStock] = useState("");
+  const [inStock, setInStock] = useState(true);
+  const [minOrder, setMinOrder] = useState("1");
+  const [step, setStep] = useState("1");
+  
+  const [variants, setVariants] = useState<{ id: string, name: string, price: string }[]>([]);
   
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -30,16 +34,25 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
         setName(initialData.name || "");
         setCategoryId(initialData.category_id || (categories.length > 0 ? categories[0].id : ""));
         setPrice(initialData.price?.toString() || "");
-        setDescription(initialData.description || "");
-        setStock(initialData.stock?.toString() || "0");
-        setImagePreview(initialData.image_url || null);
+        setDescription(initialData.full_desc || "");
+        setInStock(initialData.inStock !== false); // default true if undefined
+        setMinOrder(initialData.minOrder?.toString() || "1");
+        
+        const stepOpt = initialData.options?.find((o: any) => o.name === "Step");
+        setStep(stepOpt ? stepOpt.values[0] : "1");
+
+        setVariants(initialData.variants || []);
+        setImagePreview(initialData.image || null);
         setImageFile(null);
       } else {
         setName("");
         setCategoryId(categories.length > 0 ? categories[0].id : "");
         setPrice("");
         setDescription("");
-        setStock("0");
+        setInStock(true);
+        setMinOrder("1");
+        setStep("1");
+        setVariants([]);
         setImagePreview(null);
         setImageFile(null);
       }
@@ -71,7 +84,6 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
       });
     });
 
-    // Also include any subcategories whose parent wasn't found (safety check)
     subCategories.forEach(child => {
       if (!tree.some(t => t.id === child.id)) {
         tree.push({
@@ -94,6 +106,22 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
     }
   };
 
+  const addVariant = () => {
+    setVariants([...variants, { id: Math.random().toString(36).substring(7), name: '', price: '' }]);
+  };
+
+  const updateVariant = (index: number, field: string, value: string) => {
+    const newVariants = [...variants];
+    newVariants[index] = { ...newVariants[index], [field]: value };
+    setVariants(newVariants);
+  };
+
+  const removeVariant = (index: number) => {
+    const newVariants = [...variants];
+    newVariants.splice(index, 1);
+    setVariants(newVariants);
+  };
+
   const handleSave = async () => {
     if (!name || !price || !categoryId) {
       toast.error("Iltimos barcha majburiy maydonlarni to'ldiring");
@@ -102,48 +130,58 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
 
     setIsSaving(true);
     try {
-      const { supabase } = await import('@/lib/supabase');
       let finalImageUrl = imagePreview;
 
       // 1. Upload image if new file selected
       if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-        const filePath = `${fileName}`;
+        const formData = new FormData();
+        formData.append('file', imageFile);
 
-        const { error: uploadError, data } = await supabase.storage
-          .from('products')
-          .upload(filePath, imageFile);
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('products')
-          .getPublicUrl(filePath);
-          
-        finalImageUrl = publicUrl;
+        const uploadRes = await fetch('/api/admin/upload', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const uploadJson = await uploadRes.json();
+        
+        if (!uploadJson.success) {
+          throw new Error(uploadJson.message || "Rasm yuklashda xatolik");
+        }
+        
+        finalImageUrl = uploadJson.url;
       }
 
-      // 2. Save or Update Product
+      const finalOptions = variants.length > 0 ? [{ name: "O'lcham / Hajm", values: variants.map(v => v.name) }] : [];
+      if (parseInt(step) > 1) {
+        finalOptions.push({ name: "Step", values: [step.toString()] });
+      }
+
+      // 2. Save or Update Product via Admin API to bypass RLS
       const productData = {
         name,
         category_id: categoryId,
         price: parseFloat(price),
-        description,
-        stock: parseInt(stock),
-        image_url: finalImageUrl
+        full_desc: description,
+        inStock: inStock,
+        minOrder: parseInt(minOrder) || 1,
+        image: finalImageUrl,
+        variants: variants,
+        options: finalOptions
       };
 
-      let error;
-      if (initialData) {
-        const res = await supabase.from('products').update(productData).eq('id', initialData.id);
-        error = res.error;
-      } else {
-        const res = await supabase.from('products').insert([productData]);
-        error = res.error;
-      }
+      const endpoint = '/api/admin/products';
+      const method = initialData ? 'PUT' : 'POST';
+      const body = initialData ? { id: initialData.id, ...productData } : productData;
 
-      if (error) throw error;
+      const res = await fetch(endpoint, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      
+      const json = await res.json();
+
+      if (!json.success) throw new Error(json.message);
 
       toast.success(initialData ? "Mahsulot yangilandi!" : "Mahsulot qo'shildi!");
       if (onSuccess) onSuccess();
@@ -179,7 +217,7 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
                 value={name}
                 onChange={e => setName(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all" 
-                placeholder="Masalan: Bir martalik stakan 250ml" 
+                placeholder="Masalan: Bir martalik stakan" 
               />
             </div>
             
@@ -200,7 +238,7 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Narxi (so'm) *</label>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Asosiy narxi (so'm) *</label>
               <input 
                 type="number" 
                 value={price}
@@ -208,6 +246,99 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
                 className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all" 
                 placeholder="1000" 
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Minimal buyurtma</label>
+              <input 
+                type="number" 
+                value={minOrder}
+                onChange={e => setMinOrder(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all" 
+                placeholder="1" 
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Qadam (Masalan: 100 tadan)</label>
+              <input 
+                type="number" 
+                value={step}
+                onChange={e => setStep(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all" 
+                placeholder="1" 
+              />
+            </div>
+
+            <div className="flex flex-col justify-center">
+              <label className="block text-sm font-bold text-slate-700 mb-3">Holati (Omborda)</label>
+              <label className="relative inline-flex items-center cursor-pointer w-max">
+                <input 
+                  type="checkbox" 
+                  checked={inStock}
+                  onChange={e => setInStock(e.target.checked)}
+                  className="sr-only peer" 
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                <span className="ml-3 text-sm font-medium text-slate-700">
+                  {inStock ? "Mavjud" : "Tugagan"}
+                </span>
+              </label>
+            </div>
+
+            {/* Variatsiyalar */}
+            <div className="sm:col-span-2 bg-slate-50/50 border border-slate-200 rounded-2xl p-5">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h3 className="font-bold text-slate-900">Mahsulot variatsiyalari (Ixtiyoriy)</h3>
+                  <p className="text-xs text-slate-500">Bitta mahsulotning har xil hajmi yoki o'lchami bo'lsa kiriting (masalan, 300ml, 500ml)</p>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={addVariant}
+                  className="flex items-center gap-1.5 text-xs font-bold text-primary-600 bg-primary-50 hover:bg-primary-100 px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  <Plus size={14} /> Qo'shish
+                </button>
+              </div>
+
+              {variants.length > 0 ? (
+                <div className="space-y-3">
+                  {variants.map((v, i) => (
+                    <div key={v.id} className="flex gap-3 items-center">
+                      <div className="flex-1">
+                        <input 
+                          type="text" 
+                          placeholder="Nomi (Masalan: 300ml)" 
+                          value={v.name}
+                          onChange={e => updateVariant(i, 'name', e.target.value)}
+                          className="w-full bg-white border border-slate-200 focus:border-primary-500 rounded-xl py-2.5 px-3 outline-none text-sm" 
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <input 
+                          type="number" 
+                          placeholder="Narxi (So'm)" 
+                          value={v.price}
+                          onChange={e => updateVariant(i, 'price', e.target.value)}
+                          className="w-full bg-white border border-slate-200 focus:border-primary-500 rounded-xl py-2.5 px-3 outline-none text-sm" 
+                        />
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={() => removeVariant(i)}
+                        className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors shrink-0"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-sm text-slate-400 font-medium italic text-center py-4 border-2 border-dashed border-slate-200 rounded-xl">
+                  Hozircha variatsiya qo'shilmagan
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-2">
@@ -253,7 +384,7 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
               {imagePreview && (
                 <button 
                   onClick={() => { setImagePreview(null); setImageFile(null); }}
-                  className="mt-2 text-sm text-error font-bold hover:underline"
+                  className="mt-2 text-sm text-error font-bold hover:underline text-red-500"
                 >
                   Rasmni o'chirish
                 </button>

@@ -58,12 +58,20 @@ export default function Home() {
   const { addItem } = useCartStore();
   const [isSampleModalOpen, setIsSampleModalOpen] = useState(false);
   const [dynamicContent, setDynamicContent] = useState<any>(null);
+  const [dbCategories, setDbCategories] = useState<any[]>([]);
 
   useEffect(() => {
     fetch('/api/content')
       .then(r => r.json())
       .then(data => setDynamicContent(data))
       .catch(console.error);
+      
+    supabase.from('categories')
+      .select('*')
+      .is('parent_id', null)
+      .then(({ data }) => {
+        if (data && data.length > 0) setDbCategories(data);
+      });
   }, []);
 
   // Content fallbacks
@@ -183,6 +191,15 @@ export default function Home() {
     ]
   };
 
+  const displayCategories = dbCategories.length > 0 ? dbCategories.map(cat => ({
+    id: cat.id,
+    title_uz: cat.name_uz || cat.name,
+    title_ru: cat.name_ru || cat.name,
+    desc_uz: "",
+    desc_ru: "",
+    img: cat.icon && cat.icon.startsWith('http') ? cat.icon : "https://images.unsplash.com/photo-1605600659908-0ef719419d41?q=80&w=800&auto=format&fit=crop"
+  })) : categoriesExtraData.categories;
+
   const handleQuickReorder = async () => {
     try {
       const { data: item, error } = await supabase
@@ -196,12 +213,16 @@ export default function Home() {
         return;
       }
 
+      const stepOpt = item.options?.find((o: any) => o.name === "Step");
+      const step = stepOpt ? parseInt(stepOpt.values[0]) : 1;
+
       addItem({
         id: item.id,
         name: item.name,
         price: item.price,
         image: item.image || '',
         minOrderQuantity: item.minOrder || 1,
+        step: step,
         quantity: (item.minOrder || 1) * 5
       });
       toast.success(language === 'uz' ? "Oldingi buyurtmangiz savatga qayta qo'shildi!" : "Ваш предыдущий заказ снова добавлен в корзину!");
@@ -382,7 +403,7 @@ export default function Home() {
             variants={staggerContainer}
             className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[240px]"
           >
-            {categoriesExtraData.categories.map((cat: any, idx: number) => (
+            {displayCategories.slice(0, 6).map((cat: any, idx: number) => (
               <motion.div key={idx} variants={fadeUp} className={`group relative overflow-hidden rounded-xl bg-slate-900 cursor-pointer ${idx === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}>
                 <img src={cat.img} alt={language === 'uz' ? cat.title_uz : cat.title_ru} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
@@ -392,9 +413,11 @@ export default function Home() {
                     <h3 className="text-xl md:text-2xl font-bold text-white mb-2 leading-tight">
                       {language === 'uz' ? cat.title_uz : cat.title_ru}
                     </h3>
-                    <p className="text-slate-300 text-sm hidden sm:block">
-                      {language === 'uz' ? cat.desc_uz : cat.desc_ru}
-                    </p>
+                    {cat.desc_uz && cat.desc_ru && (
+                      <p className="text-slate-300 text-sm hidden sm:block">
+                        {language === 'uz' ? cat.desc_uz : cat.desc_ru}
+                      </p>
+                    )}
                   </div>
                   {idx !== 0 && (
                     <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300 shrink-0">

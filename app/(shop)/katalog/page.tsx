@@ -34,7 +34,7 @@ export default function KatalogPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch("/api/products");
+        const res = await fetch("/api/products", { cache: 'no-store' });
         const data = await res.json();
         
         if (data.error) throw new Error(data.error);
@@ -162,6 +162,8 @@ export default function KatalogPage() {
               >
                 {(() => {
                   const cartItem = mounted ? items.find(item => item.id === product.id) : undefined;
+                  const stepOpt = product.options?.find((o: any) => o.name === "Step");
+                  const step = stepOpt ? parseInt(stepOpt.values[0]) : 1;
                   return (
                     <>
                       <div className="w-full h-36 sm:h-48 bg-slate-100 shrink-0 relative group-hover:scale-105 transition-transform duration-500">
@@ -190,9 +192,21 @@ export default function KatalogPage() {
                             {cleanName(product.name)}
                           </h3>
                         </Link>
-                        <p className="text-sm text-slate-500 mb-4 hidden sm:line-clamp-2">
+                        <p className="text-sm text-slate-500 mb-2 hidden sm:line-clamp-2">
                           {product.full_desc}
                         </p>
+                        {product.options && product.options.filter((o: any) => o.name !== "Step").length > 0 && (
+                          <div className="flex flex-wrap gap-1 mb-4 hidden sm:flex">
+                            {product.options.filter((o: any) => o.name !== "Step").slice(0, 2).map((opt: any, i: number) => (
+                              <span key={i} className="text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200 truncate max-w-full">
+                                {opt.name}: {opt.values.join(', ')}
+                              </span>
+                            ))}
+                            {product.options.filter((o: any) => o.name !== "Step").length > 2 && (
+                              <span className="text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200">...</span>
+                            )}
+                          </div>
+                        )}
                         <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                           <div className="shrink-0">
                             <div className="text-xs text-slate-400 mb-0.5">{language === 'uz' ? 'Narxi' : 'Цена'} ({product.unit})</div>
@@ -205,10 +219,10 @@ export default function KatalogPage() {
                             <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl h-10 overflow-hidden w-full sm:w-auto shrink-0">
                               <button 
                                 onClick={() => {
-                                  if (cartItem.quantity <= 1) {
+                                  if (cartItem.quantity - step < (product.minOrder || 1)) {
                                     removeItem(product.id);
                                   } else {
-                                    updateQuantity(product.id, cartItem.quantity - 1);
+                                    updateQuantity(product.id, cartItem.quantity - step);
                                   }
                                 }}
                                 className="w-10 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-colors"
@@ -219,7 +233,7 @@ export default function KatalogPage() {
                                 {cartItem.quantity}
                               </div>
                               <button 
-                                onClick={() => updateQuantity(product.id, cartItem.quantity + 1)}
+                                onClick={() => updateQuantity(product.id, cartItem.quantity + step)}
                                 className="w-10 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-colors"
                               >
                                 <Plus size={16} />
@@ -235,7 +249,8 @@ export default function KatalogPage() {
                                   name: product.name,
                                   price: product.price,
                                   image: product.image,
-                                  minOrderQuantity: product.minOrder
+                                  minOrderQuantity: product.minOrder,
+                                  step: step
                                 });
                                 toast.success(language === 'uz' ? `${product.name} savatga qo'shildi!` : `${product.name} добавлено в корзину!`);
                               }}

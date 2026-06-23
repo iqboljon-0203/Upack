@@ -8,6 +8,7 @@ export interface CartItem {
   image: string;
   quantity: number;
   minOrderQuantity?: number;
+  step?: number;
 }
 
 interface CartStore {
@@ -29,13 +30,13 @@ export const useCartStore = create<CartStore>()(
       cartLimits: { globalLimit: 100, productLimits: {} },
       fetchCartLimits: async () => {
         try {
-          const res = await fetch('/api/content?id=cart_limits');
+          const res = await fetch('/api/content');
           const json = await res.json();
-          if (json && json.data) {
+          if (json && json.cart_limits) {
             set({
               cartLimits: {
-                globalLimit: json.data.globalLimit || 100,
-                productLimits: json.data.productLimits || {}
+                globalLimit: json.cart_limits.globalLimit || 100,
+                productLimits: json.cart_limits.productLimits || {}
               }
             });
           }
@@ -49,7 +50,7 @@ export const useCartStore = create<CartStore>()(
 
         set((state) => {
           const existingItem = state.items.find(item => item.id === newItem.id);
-          const addedQty = newItem.quantity || 1;
+          const addedQty = newItem.quantity || newItem.minOrderQuantity || newItem.step || 1;
           const currentQty = existingItem ? existingItem.quantity : 0;
           const newQty = currentQty + addedQty;
 

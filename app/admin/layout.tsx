@@ -50,7 +50,8 @@ export default function AdminLayout({
         {[
           { href: "/admin", icon: LayoutDashboard, label: "Dashboard", active: pathname === "/admin" || pathname === "/" },
           { href: "/admin/orders", icon: ShoppingBag, label: "Buyurtmalar", active: pathname.startsWith("/admin/orders") || pathname.startsWith("/orders") },
-          { href: "/admin/products", icon: Package, label: "Mahsulotlar", active: pathname.startsWith("/admin/products") || pathname.startsWith("/products") }
+          { href: "/admin/products", icon: Package, label: "Mahsulotlar", active: pathname.startsWith("/admin/products") || pathname.startsWith("/products") },
+          { href: "/admin/categories", icon: Package, label: "Kategoriyalar", active: pathname === "/admin/categories" }
         ].map((item, idx) => (
           <Link key={idx} href={item.href} onClick={() => setIsSidebarOpen(false)}>
             <motion.div 
@@ -76,7 +77,7 @@ export default function AdminLayout({
             { href: "/admin/content/steps", label: "Qadamlar" },
             { href: "/admin/content/brands", label: "Brendlar" },
             { href: "/admin/content/reorder", label: "Qayta buyurtma" },
-            { href: "/admin/content/categories", label: "Kategoriyalar" },
+            { href: "/admin/content/categories", label: "Bosh sahifa kategoriyalari" },
             { href: "/admin/content/faq", label: "FAQ (Savollar)" },
             { href: "/admin/content/cta", label: "Namuna (CTA)" },
             { href: "/admin/content/reviews", label: "Mijozlar fikrlari" },

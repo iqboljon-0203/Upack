@@ -44,10 +44,10 @@ export default function AdminProducts() {
     if (!confirm("Rostdan ham ushbu mahsulotni o'chirmoqchimisiz?")) return;
     
     try {
-      const { supabase } = await import('@/lib/supabase');
-      const { error } = await supabase.from('products').delete().eq('id', id);
+      const res = await fetch(`/api/admin/products?id=${id}`, { method: 'DELETE' });
+      const json = await res.json();
       
-      if (error) throw error;
+      if (!json.success) throw new Error(json.message);
       
       toast.success("Mahsulot o'chirildi");
       fetchData();
@@ -123,8 +123,8 @@ export default function AdminProducts() {
               {filteredProducts.map((product) => (
                 <div key={product.id} className="bg-white border border-slate-100 rounded-2xl p-4 flex gap-4 hover:shadow-sm transition-all relative">
                   <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-100 bg-slate-50/30 shrink-0">
-                    {product.image_url ? (
-                      <Image src={product.image_url} alt={product.name} fill className="object-contain p-1.5" />
+                    {product.image ? (
+                      <Image src={product.image} alt={product.name} fill className="object-contain p-1.5" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-300">
                         <ImageIcon size={24} />
@@ -181,9 +181,9 @@ export default function AdminProducts() {
                   {filteredProducts.map((product) => (
                     <tr key={product.id} className="border-b border-slate-100 hover:bg-slate-50/40 transition-colors group">
                       <td className="p-4 pl-6">
-                        {product.image_url ? (
+                        {product.image ? (
                           <div className="relative w-11 h-11 rounded-xl overflow-hidden border border-slate-100 bg-white">
-                            <Image src={product.image_url} alt={product.name} fill className="object-contain p-1" />
+                            <Image src={product.image} alt={product.name} fill className="object-contain p-1" />
                           </div>
                         ) : (
                           <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300">

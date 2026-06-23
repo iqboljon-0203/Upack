@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-export const revalidate = 300; // Cache for 5 minutes (ISR)
+// Disable caching to reflect admin changes immediately
+export const dynamic = 'force-dynamic';
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-url.supabase.co',

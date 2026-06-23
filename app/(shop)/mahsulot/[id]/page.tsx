@@ -23,6 +23,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   // These rely on product, so initialize them after fetching
   const [localQuantity, setLocalQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [activeVariant, setActiveVariant] = useState<any>(null);
 
   useEffect(() => {
     useCartStore.getState().fetchCartLimits();
@@ -31,16 +32,23 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   useEffect(() => {
     async function fetchProduct() {
       try {
+        const decodedId = decodeURIComponent(params.id);
         const { data, error } = await supabase
           .from('products')
           .select('*')
-          .eq('id', params.id)
+          .eq('id', decodedId)
           .single();
         
-        if (error) throw error;
+        if (error) {
+          console.error("Supabase single error:", error);
+          throw error;
+        }
         setProduct(data);
         if (data) {
           setLocalQuantity(data.minOrder || 1);
+          if (data.variants && data.variants.length > 0) {
+            setActiveVariant(data.variants[0]);
+          }
 
           // Fetch related products (same category)
           const { data: relatedData } = await supabase
@@ -83,24 +91,32 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     );
   }
 
-  const cartItem = items.find(item => item.id === product.id);
+  const currentPrice = activeVariant ? Number(activeVariant.price) : Number(product.price);
+  const currentId = activeVariant ? `${product.id}-${activeVariant.id}` : product.id;
+  const currentName = activeVariant ? `${product.name} (${activeVariant.name})` : product.name;
+  
+  const stepOpt = product.options?.find((o: any) => o.name === "Step");
+  const step = stepOpt ? parseInt(stepOpt.values[0]) : 1;
+
+  const cartItem = items.find(item => item.id === currentId);
 
   const gallery = [product.image];
 
   const handleAddToCart = () => {
     if (cartItem) {
-      updateQuantity(product.id, cartItem.quantity + localQuantity);
+      updateQuantity(currentId, cartItem.quantity + localQuantity);
     } else {
       addItem({
-        id: product.id,
-        name: product.name,
-        price: product.price,
+        id: currentId,
+        name: currentName,
+        price: currentPrice,
         image: product.image,
         minOrderQuantity: product.minOrder,
+        step: step,
         quantity: localQuantity
       });
     }
-    toast.success(language === 'uz' ? `${product.name} savatga qo'shildi!` : `${product.name} добавлено в корзину!`);
+    toast.success(language === 'uz' ? `${currentName} savatga qo'shildi!` : `${currentName} добавлено в корзину!`);
   };
 
   return (
@@ -154,14 +170,45 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             {cleanName(product.name)}
           </h1>
           <div className="text-3xl font-black text-primary-600 mb-6">
-            {product.price.toLocaleString('ru-RU')} {language === 'uz' ? "so'm" : 'сум'} <span className="text-sm font-medium text-slate-400">/ {product.unit}</span>
+            {currentPrice.toLocaleString('ru-RU')} {language === 'uz' ? "so'm" : 'сум'} <span className="text-sm font-medium text-slate-400">/ {product.unit || 'dona'}</span>
           </div>
+
+          {/* Variants Selection */}
+          {product.variants && product.variants.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-sm font-bold text-slate-900 mb-3">{language === 'uz' ? 'Variantni tanlang:' : 'Выберите вариант:'}</h3>
+              <div className="flex flex-wrap gap-2">
+                {product.variants.map((v: any) => (
+                  <button
+                    key={v.id}
+                    onClick={() => setActiveVariant(v)}
+                    className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                      activeVariant?.id === v.id 
+                        ? 'bg-primary-600 text-white shadow-md shadow-primary-600/20' 
+                        : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200'
+                    }`}
+                  >
+                    {v.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="prose prose-slate mb-8 max-w-none">
             <h3 className="text-lg font-bold text-slate-900 mb-2">{language === 'uz' ? 'Mahsulot haqida:' : 'О товаре:'}</h3>
-            <p className="text-slate-600 whitespace-pre-wrap leading-relaxed">
+            <p className="text-slate-600 whitespace-pre-wrap leading-relaxed mb-4">
               {product.full_desc}
             </p>
+            {product.options && product.options.filter((o: any) => o.name !== "Step").length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-4">
+                {product.options.filter((o: any) => o.name !== "Step").map((opt: any, i: number) => (
+                  <span key={i} className="text-sm font-medium bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200">
+                    <span className="text-slate-500 mr-1">{opt.name}:</span> {opt.values.join(', ')}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="mt-auto space-y-6">
@@ -172,7 +219,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 return (
                   <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl h-14 w-full sm:w-auto shrink-0 px-2">
                     <button 
-                      onClick={() => setLocalQuantity(Math.max(product.minOrder, localQuantity - 1))}
+                      onClick={() => setLocalQuantity(Math.max(product.minOrder || 1, localQuantity - step))}
                       className="w-12 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
                     >
                       <Minus size={20} />
@@ -185,7 +232,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                         if (localQuantity >= productLimit) {
                           toast.warning(`Maksimal buyurtma miqdori: ${productLimit} ta`);
                         } else {
-                          setLocalQuantity(localQuantity + 1);
+                          setLocalQuantity(localQuantity + step);
                         }
                       }}
                       className="w-12 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
