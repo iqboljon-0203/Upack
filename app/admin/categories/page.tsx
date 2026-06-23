@@ -103,7 +103,7 @@ export default function AdminCategories() {
 
       const endpoint = '/api/admin/categories';
       const method = editingCategory ? 'PUT' : 'POST';
-      const body = editingCategory ? { id: editingCategory.id, ...payload } : payload;
+      const body = payload;
 
       const res = await fetch(endpoint, {
         method,
