@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowRight, Truck, ShieldCheck, Clock, CheckCircle, Package, History, Star, StarHalf, Leaf, Box, ChevronDown, ChevronUp, Gift, MessageSquare, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -59,6 +59,7 @@ export default function Home() {
   const [isSampleModalOpen, setIsSampleModalOpen] = useState(false);
   const [dynamicContent, setDynamicContent] = useState<any>(null);
   const [dbCategories, setDbCategories] = useState<any[]>([]);
+  const reviewsScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch(`/api/content?t=${Date.now()}`, { cache: 'no-store' })
@@ -66,12 +67,31 @@ export default function Home() {
       .then(data => setDynamicContent(data))
       .catch(console.error);
       
-    supabase.from('categories')
-      .select('*')
-      .is('parent_id', null)
-      .then(({ data }) => {
-        if (data && data.length > 0) setDbCategories(data);
-      });
+      supabase.from('categories')
+        .select('*')
+        .is('parent_id', null)
+        .then(({ data }) => {
+          if (data && data.length > 0) setDbCategories(data);
+        });
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (reviewsScrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = reviewsScrollRef.current;
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          reviewsScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          const firstChild = reviewsScrollRef.current.children[0] as HTMLElement;
+          if (firstChild) {
+            const cardWidth = firstChild.offsetWidth + 24; // 24px is gap-6
+            reviewsScrollRef.current.scrollBy({ left: cardWidth, behavior: 'smooth' });
+          }
+        }
+      }
+    }, 4000);
+
+    return () => clearInterval(interval);
   }, []);
 
   // Content fallbacks
@@ -613,11 +633,12 @@ export default function Home() {
           </div>
           
           <motion.div 
+            ref={reviewsScrollRef}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 pt-4 px-2 -mx-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 pt-4 px-2 -mx-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
           >
             {reviewsData.reviews.map((review: any, idx: number) => (
               <motion.div key={idx} variants={fadeUp} className="p-8 bg-slate-50 rounded-3xl border border-slate-100 shrink-0 w-[85vw] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] snap-start flex flex-col">

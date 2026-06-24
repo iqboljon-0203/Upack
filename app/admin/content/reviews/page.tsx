@@ -63,8 +63,14 @@ export default function ReviewsContentAdmin() {
   const addReview = () => {
     setData({
       ...data,
-      reviews: [...data.reviews, { text_uz: "", text_ru: "", author_uz: "", author_ru: "", role_uz: "", role_ru: "", rating: 5 }]
+      reviews: [{ text_uz: "", text_ru: "", author_uz: "", author_ru: "", role_uz: "", role_ru: "", rating: 5 }, ...data.reviews]
     });
+    setTimeout(() => {
+      const firstInput = document.querySelector('.review-rating-input') as HTMLInputElement;
+      if (firstInput) {
+        firstInput.focus();
+      }
+    }, 50);
   };
 
   const removeReview = (index: number) => {
@@ -142,7 +148,7 @@ export default function ReviewsContentAdmin() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Baho (1 dan 5 gacha)</label>
-                    <input type="number" min="1" max="5" step="0.5" value={review.rating} onChange={(e) => handleReviewChange(idx, 'rating', parseFloat(e.target.value))} className="w-full md:w-1/3 border border-slate-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none bg-slate-50" />
+                    <input type="number" min="1" max="5" step="0.5" value={review.rating} onChange={(e) => handleReviewChange(idx, 'rating', parseFloat(e.target.value))} className="review-rating-input w-full md:w-1/3 border border-slate-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none bg-slate-50" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Fikr (O'zbekcha)</label>

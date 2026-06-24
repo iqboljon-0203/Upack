@@ -95,9 +95,11 @@ export default function BrandsContentAdmin() {
       brands: [{ name: "Yangi brend", image: "" }, ...data.brands]
     });
     setTimeout(() => {
-      const el = document.getElementById('brand-input-0') as HTMLInputElement | null;
-      el?.focus();
-      el?.select();
+      const input = document.getElementById('brand-input-0') as HTMLInputElement;
+      if (input) {
+        input.focus();
+        input.select();
+      }
     }, 100);
   };
 

@@ -62,8 +62,14 @@ export default function FAQContentAdmin() {
   const addItem = () => {
     setData({
       ...data,
-      items: [...data.items, { q_uz: "", q_ru: "", a_uz: "", a_ru: "" }]
+      items: [{ q_uz: "", q_ru: "", a_uz: "", a_ru: "" }, ...data.items]
     });
+    setTimeout(() => {
+      const firstInput = document.querySelector('.faq-q-uz-input') as HTMLInputElement;
+      if (firstInput) {
+        firstInput.focus();
+      }
+    }, 50);
   };
 
   const removeItem = (index: number) => {
@@ -141,7 +147,7 @@ export default function FAQContentAdmin() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Savol (O'zbekcha)</label>
-                    <input type="text" value={item.q_uz} onChange={(e) => handleItemChange(idx, 'q_uz', e.target.value)} className="w-full border border-slate-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none font-medium text-slate-900" />
+                    <input type="text" value={item.q_uz} onChange={(e) => handleItemChange(idx, 'q_uz', e.target.value)} className="faq-q-uz-input w-full border border-slate-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none font-medium text-slate-900" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Savol (Ruscha)</label>

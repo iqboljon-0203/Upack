@@ -69,8 +69,11 @@ export default function StepsContentAdmin() {
       steps: [{ num: `0${data.steps.length + 1}`, title_uz: "", title_ru: "", desc_uz: "", desc_ru: "" }, ...data.steps]
     });
     setTimeout(() => {
-      document.getElementById('step-input-0')?.focus();
-      document.getElementById('step-input-0')?.select();
+      const input = document.getElementById('step-input-0') as HTMLInputElement;
+      if (input) {
+        input.focus();
+        input.select();
+      }
     }, 100);
   };
 
