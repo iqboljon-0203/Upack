@@ -18,7 +18,7 @@ export default function ReorderContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=reorder')
+    fetch(`/api/admin/content?id=reorder&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {

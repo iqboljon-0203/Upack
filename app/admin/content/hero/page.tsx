@@ -26,7 +26,7 @@ export default function HeroContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=hero')
+    fetch(`/api/admin/content?id=hero&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {

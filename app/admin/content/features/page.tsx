@@ -22,7 +22,7 @@ export default function FeaturesContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=features')
+    fetch(`/api/admin/content?id=features&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {
@@ -131,9 +131,6 @@ export default function FeaturesContentAdmin() {
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-lg text-slate-800">Afzalliklar kartochkalari</h3>
-            <button onClick={addCard} className="text-primary-600 hover:text-primary-700 font-bold text-sm flex items-center gap-1">
-              <Plus size={16} /> Qo'shish
-            </button>
           </div>
           
           <div className="space-y-4">

@@ -11,7 +11,7 @@ export default function AboutPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/content')
+    fetch(`/api/content?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(content => {
         if (content && content.about) {

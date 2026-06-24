@@ -61,7 +61,7 @@ export default function Home() {
   const [dbCategories, setDbCategories] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/content')
+    fetch(`/api/content?t=${Date.now()}`, { cache: 'no-store' })
       .then(r => r.json())
       .then(data => setDynamicContent(data))
       .catch(console.error);
@@ -180,25 +180,39 @@ export default function Home() {
     btn_ru: "Повторить заказ"
   };
 
-  const categoriesExtraData = dynamicContent?.categories_extra || {
-    categories: [
+  const categoriesExtraData = dynamicContent?.categories_extra_header || dynamicContent?.categories_extra || {
+    title_uz: 'Kategoriyalar',
+    title_ru: 'Категории',
+    desc_uz: "Asosiy mahsulot yo'nalishlarimiz",
+    desc_ru: 'Наши основные направления продукции',
+    btn_uz: "Barchasini ko'rish",
+    btn_ru: 'Посмотреть все',
+  };
+
+  const categoryMetadata = dynamicContent?.category_metadata || {};
+
+  let displayCategories = dbCategories
+    .filter(cat => categoryMetadata[cat.id]?.is_featured)
+    .slice(0, 6)
+    .map(cat => ({
+      id: cat.id,
+      title_uz: cat.name_uz || cat.name,
+      title_ru: cat.name_ru || cat.name_uz || cat.name,
+      desc_uz: categoryMetadata[cat.id]?.desc_uz || "",
+      desc_ru: categoryMetadata[cat.id]?.desc_ru || "",
+      img: cat.icon || "https://images.unsplash.com/photo-1605600659908-0ef719419d41?q=80&w=800&auto=format&fit=crop"
+    }));
+
+  if (displayCategories.length === 0) {
+    displayCategories = dynamicContent?.categories_extra?.categories || [
       { id: 'bir-martalik', title_uz: 'Bir martalik idishlar', title_ru: 'Одноразовая посуда', desc_uz: "Kafelar, restoranlar va yetkazib berish xizmatlari uchun", desc_ru: "Для кафе, ресторанов и служб доставки", img: "/category-1.png" },
       { id: 'qadoqlash', title_uz: 'Qadoqlash vositalari', title_ru: 'Упаковочные материалы', desc_uz: "Karton, plyonka, skotch va qutilar", desc_ru: "Картон, пленка, скотч и коробки", img: "https://images.unsplash.com/photo-1605600659908-0ef719419d41?q=80&w=800&auto=format&fit=crop" },
       { id: 'ximiya', title_uz: 'Maishiy va professional ximiya', title_ru: 'Бытовая и профессиональная химия', desc_uz: "Yuqori sifatli tozalash vositalari", desc_ru: "Высококачественные чистящие средства", img: "https://images.unsplash.com/photo-1585421514738-01798e348b17?q=80&w=800&auto=format&fit=crop" },
       { id: 'tozalash', title_uz: 'Tozalash anjomlari', title_ru: 'Уборочный инвентарь', desc_uz: "Tozalik uchun kerakli asbob-uskunalar", desc_ru: "Необходимые инструменты для уборки", img: "https://images.unsplash.com/photo-1584634731339-252c581abfc5?q=80&w=800&auto=format&fit=crop" },
       { id: 'gigiyena', title_uz: 'Gigiyenik mahsulotlar', title_ru: 'Гигиенические товары', desc_uz: "Shaxsiy himoya va gigiyena", desc_ru: "Личная защита и гигиена", img: "https://images.unsplash.com/photo-1584483766114-2cea6facdf57?q=80&w=800&auto=format&fit=crop" },
       { id: 'xojalik', title_uz: "Boshqa xo'jalik mollari", title_ru: "Другие хозяйственные товары", desc_uz: "Uyingiz va biznesingiz uchun barcha kerakli mollar", desc_ru: "Все необходимые товары для дома и бизнеса", img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=800&auto=format&fit=crop" }
-    ]
-  };
-
-  const displayCategories = dbCategories.length > 0 ? dbCategories.map(cat => ({
-    id: cat.id,
-    title_uz: cat.name_uz || cat.name,
-    title_ru: cat.name_ru || cat.name,
-    desc_uz: "",
-    desc_ru: "",
-    img: cat.icon && cat.icon.startsWith('http') ? cat.icon : "https://images.unsplash.com/photo-1605600659908-0ef719419d41?q=80&w=800&auto=format&fit=crop"
-  })) : categoriesExtraData.categories;
+    ];
+  }
 
   const handleQuickReorder = async () => {
     try {
@@ -285,12 +299,12 @@ export default function Home() {
               <span>{language === 'uz' ? heroData.badge_uz : heroData.badge_ru}</span>
             </motion.div>
             
-            <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight text-white mb-0 text-center leading-[0.9] md:leading-[0.85]">
-              <span className="block pb-2">{language === 'uz' ? heroData.title1_uz : heroData.title1_ru}</span>
-              <span className={`block relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-200 ${language === 'uz' ? '-mt-3 md:-mt-6' : '-mt-1 md:-mt-2'}`}>{language === 'uz' ? heroData.title2_uz : heroData.title2_ru}</span>
+            <motion.h1 variants={fadeUp} className="text-[6.5vw] sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white mb-2 text-center leading-[1.2] md:leading-[1.1] whitespace-nowrap">
+              <span className="block">{language === 'uz' ? heroData.title1_uz : heroData.title1_ru}</span>
+              <span className="block relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-200">{language === 'uz' ? heroData.title2_uz : heroData.title2_ru}</span>
             </motion.h1>
             
-            <motion.p variants={fadeUp} className={`text-base sm:text-lg md:text-2xl text-slate-300 mb-8 max-w-2xl mx-auto font-light leading-tight text-center ${language === 'uz' ? 'mt-0 md:-mt-4' : 'mt-2 md:-mt-2'}`}>
+            <motion.p variants={fadeUp} className="text-sm sm:text-lg md:text-xl lg:text-2xl text-slate-300 mt-4 sm:mt-6 mb-8 max-w-2xl mx-auto font-light leading-relaxed text-center whitespace-normal px-4">
               {language === 'uz' ? heroData.desc_uz : heroData.desc_ru}
             </motion.p>
             
@@ -319,7 +333,7 @@ export default function Home() {
               {heroData.stats.map((stat: any, idx: number) => (
                 <div key={idx} className="text-center">
                   <h4 className="text-2xl md:text-3xl font-black text-white mb-1">{stat.value}</h4>
-                  <p className="text-sm text-slate-400">{language === 'uz' ? stat.label_uz : stat.label_ru}</p>
+                  <div className="text-xs sm:text-sm text-slate-400 font-medium uppercase tracking-wider">{language === 'uz' ? stat.label_uz : stat.label_ru}</div>
                 </div>
               ))}
             </motion.div>
@@ -373,7 +387,7 @@ export default function Home() {
             transition={{ ease: "linear", duration: 20, repeat: Infinity }}
           >
             {[...brandsData.brands, ...brandsData.brands].map((brand: any, i: number) => (
-              <div key={i} className="text-2xl font-black text-slate-300 shrink-0 select-none opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
+              <div key={i} className="text-2xl font-black text-slate-300 shrink-0 select-none hover:scale-105 transition-all cursor-pointer">
                 {brand.image ? (
                   <img src={brand.image} alt={brand.name} className="h-12 object-contain" />
                 ) : (
@@ -389,10 +403,10 @@ export default function Home() {
       <section className="py-24 bg-slate-50">
         <div className="container mx-auto px-6">
           <div className="mb-10">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-1">{language === 'uz' ? 'Kategoriyalar' : 'Категории'}</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-1">{language === 'uz' ? categoriesExtraData.title_uz || 'Kategoriyalar' : categoriesExtraData.title_ru || 'Категории'}</h2>
             <div className="flex items-end justify-between">
-              <p className="text-slate-500 text-sm">{language === 'uz' ? "Asosiy mahsulot yo'nalishlarimiz" : 'Наши основные направления продукции'}</p>
-              <Link href="/katalog" className="text-sm font-bold text-primary-600 hover:text-primary-700 transition-colors flex items-center gap-1">{language === 'uz' ? "Barchasini ko'rish" : 'Посмотреть все'} <ArrowRight size={14}/></Link>
+              <p className="text-slate-500 text-sm">{language === 'uz' ? categoriesExtraData.desc_uz || "Asosiy mahsulot yo'nalishlarimiz" : categoriesExtraData.desc_ru || 'Наши основные направления продукции'}</p>
+              <Link href="/katalog" className="text-sm font-bold text-primary-600 hover:text-primary-700 transition-colors flex items-center gap-1">{language === 'uz' ? categoriesExtraData.btn_uz || "Barchasini ko'rish" : categoriesExtraData.btn_ru || 'Посмотреть все'} <ArrowRight size={14}/></Link>
             </div>
           </div>
           
@@ -468,26 +482,54 @@ export default function Home() {
             <p className="text-lg text-slate-500 max-w-2xl mx-auto">{language === 'uz' ? stepsData.desc_uz : stepsData.desc_ru}</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative max-w-5xl mx-auto">
-            <div className="hidden md:block absolute top-8 left-[12.5%] right-[12.5%] w-[75%] h-[2px] bg-gradient-to-r from-primary-100 via-primary-400 to-primary-100 z-0 opacity-50"></div>
-            {stepsData.steps.map((item: any, idx: number) => (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.15 }}
-                className="relative z-10 flex flex-col items-center text-center group"
-              >
-                <div className="w-16 h-16 bg-white ring-8 ring-white text-primary-600 font-black text-xl rounded-full flex items-center justify-center mb-6 shadow-xl shadow-primary-500/10 border-2 border-primary-100 relative">
-                  {item.num}
-                  <div className="absolute inset-0 rounded-full border border-primary-500/30 scale-[1.25] opacity-0 group-hover:opacity-100 animate-pulse"></div>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{language === 'uz' ? item.title_uz : item.title_ru}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{language === 'uz' ? item.desc_uz : item.desc_ru}</p>
-              </motion.div>
-            ))}
-          </div>
+          {(() => {
+            const sortedSteps = [...stepsData.steps].sort((a: any, b: any) => parseInt(a.num) - parseInt(b.num));
+            const stepCount = sortedSteps.length;
+            const gridClass = {
+              1: 'grid-cols-1 max-w-sm',
+              2: 'grid-cols-1 md:grid-cols-2 max-w-2xl',
+              3: 'grid-cols-1 md:grid-cols-3 max-w-4xl',
+              4: 'grid-cols-1 md:grid-cols-4 max-w-5xl',
+              5: 'grid-cols-1 md:grid-cols-3 lg:grid-cols-5 max-w-7xl',
+              6: 'grid-cols-1 md:grid-cols-3 lg:grid-cols-6 max-w-7xl',
+            }[stepCount as 1|2|3|4|5|6] || 'grid-cols-1 md:grid-cols-3 lg:grid-cols-6 max-w-7xl';
+            const lineClass = {
+              1: 'hidden',
+              2: 'hidden md:block left-[25%] w-[50%]',
+              3: 'hidden md:block left-[16.66%] w-[66.66%]',
+              4: 'hidden md:block left-[12.5%] w-[75%]',
+              5: 'hidden lg:block left-[10%] w-[80%]',
+              6: 'hidden lg:block left-[8.33%] w-[83.33%]',
+            }[stepCount as 1|2|3|4|5|6] || 'hidden';
+
+            return (
+              <div className={`grid gap-8 relative mx-auto ${gridClass}`}>
+                <div className={`absolute top-8 h-[2px] bg-gradient-to-r from-primary-100 via-primary-400 to-primary-100 z-0 opacity-50 ${lineClass}`}></div>
+                {sortedSteps.map((item: any, idx: number) => (
+                  <motion.div 
+                    key={idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.15 }}
+                    className="relative z-10 flex flex-row md:flex-col items-start md:items-center text-left md:text-center group gap-6 md:gap-0"
+                  >
+                    {idx !== sortedSteps.length - 1 && (
+                      <div className="md:hidden absolute top-8 left-[calc(2rem-1px)] w-[2px] h-[calc(100%+2rem)] bg-gradient-to-b from-primary-100 to-primary-400 z-[-1] opacity-50"></div>
+                    )}
+                    <div className="w-16 h-16 shrink-0 bg-white ring-8 ring-white text-primary-600 font-black text-xl rounded-full flex items-center justify-center md:mb-6 shadow-xl shadow-primary-500/10 border-2 border-primary-100 relative">
+                      {item.num}
+                      <div className="absolute inset-0 rounded-full border border-primary-500/30 scale-[1.25] opacity-0 group-hover:opacity-100 animate-pulse"></div>
+                    </div>
+                    <div className="pt-2 md:pt-0">
+                      <h3 className="text-xl font-bold text-slate-900 mb-2">{language === 'uz' ? item.title_uz : item.title_ru}</h3>
+                      <p className="text-slate-500 text-sm leading-relaxed">{language === 'uz' ? item.desc_uz : item.desc_ru}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            );
+          })()}
         </div>
       </section>
 

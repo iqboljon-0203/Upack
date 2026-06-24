@@ -22,7 +22,7 @@ export default function FAQContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=faq')
+    fetch(`/api/admin/content?id=faq&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {

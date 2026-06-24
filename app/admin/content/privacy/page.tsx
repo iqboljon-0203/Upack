@@ -36,7 +36,7 @@ export default function PrivacyContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=privacy')
+    fetch(`/api/admin/content?id=privacy&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {

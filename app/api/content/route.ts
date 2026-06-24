@@ -3,6 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 
 // Disable caching to reflect admin changes immediately
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-url.supabase.co',

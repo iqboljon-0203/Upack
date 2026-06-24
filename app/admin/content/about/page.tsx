@@ -34,7 +34,7 @@ export default function AboutContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=about')
+    fetch(`/api/admin/content?id=about&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {

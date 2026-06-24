@@ -22,7 +22,7 @@ export default function CTAContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=cta')
+    fetch(`/api/admin/content?id=cta&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {

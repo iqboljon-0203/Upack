@@ -20,7 +20,7 @@ export default function FooterContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=footer')
+    fetch(`/api/admin/content?id=footer&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {

@@ -22,7 +22,7 @@ export default function StepsContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=steps')
+    fetch(`/api/admin/content?id=steps&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {
@@ -60,10 +60,18 @@ export default function StepsContentAdmin() {
   };
 
   const addStep = () => {
+    if (data.steps.length >= 6) {
+      toast.error("Qadamlar soni 6 tadan oshmasligi kerak");
+      return;
+    }
     setData({
       ...data,
-      steps: [...data.steps, { num: `0${data.steps.length + 1}`, title_uz: "", title_ru: "", desc_uz: "", desc_ru: "" }]
+      steps: [{ num: `0${data.steps.length + 1}`, title_uz: "", title_ru: "", desc_uz: "", desc_ru: "" }, ...data.steps]
     });
+    setTimeout(() => {
+      document.getElementById('step-input-0')?.focus();
+      document.getElementById('step-input-0')?.select();
+    }, 100);
   };
 
   const removeStep = (index: number) => {
@@ -127,7 +135,7 @@ export default function StepsContentAdmin() {
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-lg text-slate-800">Qadamlar ro'yxati</h3>
-            <button onClick={addStep} className="text-primary-600 hover:text-primary-700 font-bold text-sm flex items-center gap-1">
+            <button onClick={addStep} disabled={data.steps.length >= 6} className="text-primary-600 hover:text-primary-700 disabled:opacity-50 disabled:cursor-not-allowed font-bold text-sm flex items-center gap-1">
               <Plus size={16} /> Qo'shish
             </button>
           </div>
@@ -141,7 +149,7 @@ export default function StepsContentAdmin() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Raqam (Masalan: 01, 02)</label>
-                    <input type="text" value={step.num} onChange={(e) => handleStepChange(idx, 'num', e.target.value)} className="w-full border border-slate-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none bg-slate-50" />
+                    <input id={`step-input-${idx}`} type="text" value={step.num} onChange={(e) => handleStepChange(idx, 'num', e.target.value)} className="w-full border border-slate-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none bg-slate-50" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Sarlavha (O'zbekcha)</label>

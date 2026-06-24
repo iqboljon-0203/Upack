@@ -22,7 +22,7 @@ export default function BrandsContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=brands')
+    fetch(`/api/admin/content?id=brands&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {
@@ -65,22 +65,21 @@ export default function BrandsContentAdmin() {
     
     setUploadingIdx(index);
     try {
-      const { supabase } = await import('@/lib/supabase');
-      const fileExt = file.name.split('.').pop();
-      const fileName = `brand_${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-      const filePath = `brands/${fileName}`;
+      const formData = new FormData();
+      formData.append('file', file);
 
-      const { error: uploadError } = await supabase.storage
-        .from('products')
-        .upload(filePath, file);
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-      if (uploadError) throw uploadError;
+      const data = await res.json();
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('products')
-        .getPublicUrl(filePath);
+      if (!data.success) {
+        throw new Error(data.message || 'Xatolik yuz berdi');
+      }
 
-      handleBrandChange(index, 'image', publicUrl);
+      handleBrandChange(index, 'image', data.url);
       toast.success("Rasm muvaffaqiyatli yuklandi!");
     } catch (err: any) {
       console.error(err);
@@ -93,8 +92,12 @@ export default function BrandsContentAdmin() {
   const addBrand = () => {
     setData({
       ...data,
-      brands: [...data.brands, { name: "Yangi brend", image: "" }]
+      brands: [{ name: "Yangi brend", image: "" }, ...data.brands]
     });
+    setTimeout(() => {
+      document.getElementById('brand-input-0')?.focus();
+      document.getElementById('brand-input-0')?.select();
+    }, 100);
   };
 
   const removeBrand = (index: number) => {
@@ -181,7 +184,7 @@ export default function BrandsContentAdmin() {
                 <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4 mr-8">
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Brend nomi (Matn shaklida)</label>
-                    <input type="text" value={brand.name} onChange={(e) => handleBrandChange(idx, 'name', e.target.value)} className="w-full border border-slate-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none" />
+                    <input id={`brand-input-${idx}`} type="text" value={brand.name} onChange={(e) => handleBrandChange(idx, 'name', e.target.value)} className="w-full border border-slate-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Logo rasmi (Rasm yuklang yoki URL kiriting)</label>

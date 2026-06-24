@@ -38,7 +38,7 @@ export default function DeliveryContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=delivery')
+    fetch(`/api/admin/content?id=delivery&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {

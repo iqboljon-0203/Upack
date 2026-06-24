@@ -23,7 +23,7 @@ export default function ReviewsContentAdmin() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/content?id=reviews')
+    fetch(`/api/admin/content?id=reviews&t=${Date.now()}`)
       .then(res => res.json())
       .then(res => {
         if (res.data) {

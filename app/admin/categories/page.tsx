@@ -7,7 +7,17 @@ import { motion } from "framer-motion";
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState<any[]>([]);
+  const [metadata, setMetadata] = useState<any>({});
+  const [headerData, setHeaderData] = useState<any>({
+    title_uz: 'Kategoriyalar',
+    title_ru: 'Категории',
+    desc_uz: "Asosiy mahsulot yo'nalishlarimiz",
+    desc_ru: 'Наши основные направления продукции',
+    btn_uz: "Barchasini ko'rish",
+    btn_ru: 'Посмотреть все',
+  });
   const [isLoading, setIsLoading] = useState(true);
+  const [isHeaderSaving, setIsHeaderSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +26,9 @@ export default function AdminCategories() {
   // Form State
   const [nameUz, setNameUz] = useState("");
   const [nameRu, setNameRu] = useState("");
+  const [descUz, setDescUz] = useState("");
+  const [descRu, setDescRu] = useState("");
+  const [isFeatured, setIsFeatured] = useState(false);
   const [parentId, setParentId] = useState("");
   const [icon, setIcon] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -28,6 +41,15 @@ export default function AdminCategories() {
       const { data, error } = await supabase.from('categories').select('*').order('created_at', { ascending: false });
       if (error) throw error;
       setCategories(data || []);
+
+      // Fetch metadata and header
+      const resMeta = await fetch(`/api/admin/content?id=category_metadata&t=${Date.now()}`);
+      const jsonMeta = await resMeta.json();
+      if (jsonMeta.data) setMetadata(jsonMeta.data);
+
+      const resHeader = await fetch(`/api/admin/content?id=categories_extra_header&t=${Date.now()}`);
+      const jsonHeader = await resHeader.json();
+      if (jsonHeader.data) setHeaderData(jsonHeader.data);
     } catch (err) {
       console.error(err);
       toast.error("Ma'lumotlarni yuklashda xatolik yuz berdi");
@@ -47,12 +69,21 @@ export default function AdminCategories() {
       setNameRu(category.name_ru || "");
       setParentId(category.parent_id || "");
       setIcon(category.icon || "");
+      
+      const meta = metadata[category.id] || {};
+      setDescUz(meta.desc_uz || "");
+      setDescRu(meta.desc_ru || "");
+      setIsFeatured(meta.is_featured || false);
+      
       setImageFile(null);
     } else {
       setNameUz("");
       setNameRu("");
       setParentId("");
       setIcon("");
+      setDescUz("");
+      setDescRu("");
+      setIsFeatured(false);
       setImageFile(null);
     }
     setIsModalOpen(true);
@@ -93,8 +124,9 @@ export default function AdminCategories() {
         return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
       };
 
+      const categoryId = editingCategory ? editingCategory.id : generateSlug(nameUz);
       const payload = {
-        id: editingCategory ? editingCategory.id : generateSlug(nameUz),
+        id: categoryId,
         name_uz: nameUz,
         name_ru: nameRu,
         parent_id: parentId || null,
@@ -103,16 +135,33 @@ export default function AdminCategories() {
 
       const endpoint = '/api/admin/categories';
       const method = editingCategory ? 'PUT' : 'POST';
-      const body = payload;
-
+      
       const res = await fetch(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify(payload)
       });
       
       const json = await res.json();
       if (!json.success) throw new Error(json.message);
+
+      // Save metadata
+      const newMetadata = {
+        ...metadata,
+        [categoryId]: {
+          desc_uz: descUz,
+          desc_ru: descRu,
+          is_featured: isFeatured
+        }
+      };
+      
+      await fetch('/api/admin/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: 'category_metadata', data: newMetadata })
+      });
+      
+      setMetadata(newMetadata);
 
       toast.success(editingCategory ? "Kategoriya yangilandi" : "Kategoriya qo'shildi");
       fetchData();
@@ -141,6 +190,26 @@ export default function AdminCategories() {
     }
   };
 
+  const handleSaveHeader = async () => {
+    setIsHeaderSaving(true);
+    try {
+      const res = await fetch('/api/admin/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: 'categories_extra_header', data: headerData })
+      });
+      if (res.ok) {
+        toast.success("Sarlavha muvaffaqiyatli saqlandi!");
+      } else {
+        toast.error("Xatolik yuz berdi");
+      }
+    } catch (err) {
+      toast.error("Tarmoq xatosi");
+    } finally {
+      setIsHeaderSaving(false);
+    }
+  };
+
   const filteredCategories = categories.filter(c => 
     (c.name_uz || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
     (c.name_ru || "").toLowerCase().includes(searchQuery.toLowerCase())
@@ -152,7 +221,7 @@ export default function AdminCategories() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">Kategoriyalar</h1>
-          <p className="text-xs font-semibold text-slate-400 mt-1">Barcha asosiy va ichki kategoriyalar</p>
+          <p className="text-xs font-semibold text-slate-400 mt-1">Barcha asosiy va ichki kategoriyalar hamda bosh sahifa bannerlari</p>
         </div>
         <motion.button 
           whileHover={{ scale: 1.02 }}
@@ -162,6 +231,45 @@ export default function AdminCategories() {
         >
           <Plus size={16} /> Yangi kategoriya
         </motion.button>
+      </div>
+
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-bold text-slate-800">Bosh sahifa sarlavhasi (Bannerlar usti)</h2>
+          <button 
+            onClick={handleSaveHeader}
+            disabled={isHeaderSaving}
+            className="text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-70"
+          >
+            {isHeaderSaving ? 'Saqlanmoqda...' : 'Sarlavhani saqlash'}
+          </button>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Asosiy sarlavha (O'zbekcha)</label>
+            <input type="text" value={headerData.title_uz || ''} onChange={e => setHeaderData({...headerData, title_uz: e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-primary-500 outline-none text-sm font-medium" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Asosiy sarlavha (Ruscha)</label>
+            <input type="text" value={headerData.title_ru || ''} onChange={e => setHeaderData({...headerData, title_ru: e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-primary-500 outline-none text-sm font-medium" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Qisqa tavsif (O'zbekcha)</label>
+            <input type="text" value={headerData.desc_uz || ''} onChange={e => setHeaderData({...headerData, desc_uz: e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-primary-500 outline-none text-sm font-medium" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Qisqa tavsif (Ruscha)</label>
+            <input type="text" value={headerData.desc_ru || ''} onChange={e => setHeaderData({...headerData, desc_ru: e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-primary-500 outline-none text-sm font-medium" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tugma matni (O'zbekcha)</label>
+            <input type="text" value={headerData.btn_uz || ''} onChange={e => setHeaderData({...headerData, btn_uz: e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-primary-500 outline-none text-sm font-medium" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tugma matni (Ruscha)</label>
+            <input type="text" value={headerData.btn_ru || ''} onChange={e => setHeaderData({...headerData, btn_ru: e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-primary-500 outline-none text-sm font-medium" />
+          </div>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-200/60 p-4 md:p-6">
@@ -202,15 +310,22 @@ export default function AdminCategories() {
                     <td className="p-4 font-bold text-slate-800 text-sm">{cat.name_uz || cat.name}</td>
                     <td className="p-4 font-medium text-slate-600 text-sm">{cat.name_ru || "-"}</td>
                     <td className="p-4">
+                      <div className="flex flex-col gap-1">
                       {cat.parent_id ? (
-                        <span className="inline-block px-2.5 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-md uppercase tracking-wider">
-                          Ichki kategoriya ({categories.find(p => p.id === cat.parent_id)?.name_uz || cat.parent_id})
+                        <span className="inline-block px-2.5 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-md uppercase tracking-wider w-max">
+                          Ichki ({categories.find(p => p.id === cat.parent_id)?.name_uz || cat.parent_id})
                         </span>
                       ) : (
-                        <span className="inline-block px-2.5 py-1 bg-primary-50 text-primary-600 text-[10px] font-bold rounded-md uppercase tracking-wider">
+                        <span className="inline-block px-2.5 py-1 bg-primary-50 text-primary-600 text-[10px] font-bold rounded-md uppercase tracking-wider w-max">
                           Asosiy
                         </span>
                       )}
+                      {metadata[cat.id]?.is_featured && (
+                        <span className="inline-block px-2.5 py-1 bg-yellow-50 text-yellow-600 text-[10px] font-bold rounded-md uppercase tracking-wider w-max">
+                          Banner
+                        </span>
+                      )}
+                      </div>
                     </td>
                     <td className="p-4 pr-6 text-right">
                       <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -283,6 +398,24 @@ export default function AdminCategories() {
                 />
               </div>
               <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Tavsif (O'zbekcha, Banner uchun)</label>
+                <input 
+                  type="text" 
+                  value={descUz}
+                  onChange={e => setDescUz(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Tavsif (Ruscha, Banner uchun)</label>
+                <input 
+                  type="text" 
+                  value={descRu}
+                  onChange={e => setDescRu(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all" 
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Asosiy Kategoriya (Ixtiyoriy)</label>
                 <select 
                   value={parentId}
@@ -294,6 +427,16 @@ export default function AdminCategories() {
                     <option key={c.id} value={c.id}>{c.name_uz || c.name}</option>
                   ))}
                 </select>
+              </div>
+              
+              <div className="flex items-center gap-3 mt-2 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer" onClick={() => setIsFeatured(!isFeatured)}>
+                <div className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors border ${isFeatured ? 'bg-primary-600 border-primary-600 text-white' : 'bg-white border-slate-300'}`}>
+                  {isFeatured && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                </div>
+                <div>
+                  <div className="text-sm font-bold text-slate-800">Bosh sahifada ko'rsatish (Banner sifatida)</div>
+                  <div className="text-xs text-slate-500">Ushbu kategoriya sayt bosh sahifasidagi 6 ta bannerdan biri bo'lib chiqadi.</div>
+                </div>
               </div>
             </div>
 

@@ -10,12 +10,7 @@ import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/lib/supabase";
 
-const CATEGORIES = [
-  { id: "all", labelUz: "Barcha mahsulotlar", labelRu: "Все товары" },
-  { id: "bir-martalik", labelUz: "Bir martalik idishlar", labelRu: "Одноразовая посуда" },
-  { id: "qadoqlash", labelUz: "Qadoqlash vositalari", labelRu: "Упаковочные материалы" },
-  { id: "ximiya", labelUz: "Ximiya va tozalash", labelRu: "Бытовая химия и уборка" },
-];
+// Categories are now fetched from DB
 
 export default function KatalogPage() {
   const { language, t } = useLanguage();
@@ -29,6 +24,9 @@ export default function KatalogPage() {
   const { toggleFavorite, isFavorite } = useFavoritesStore();
 
   const [productsData, setProductsData] = useState<any[]>([]);
+  const [dbCategories, setDbCategories] = useState<any[]>([
+    { id: "all", name_uz: "Barcha mahsulotlar", name_ru: "Все товары" }
+  ]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,7 +44,18 @@ export default function KatalogPage() {
         setLoading(false);
       }
     }
+    async function fetchCategories() {
+      try {
+        const { data } = await supabase.from('categories').select('*').order('created_at', { ascending: false });
+        if (data) {
+          setDbCategories([{ id: "all", name_uz: "Barcha mahsulotlar", name_ru: "Все товары" }, ...data]);
+        }
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    }
     fetchProducts();
+    fetchCategories();
   }, [language]);
 
   useEffect(() => {
@@ -122,7 +131,7 @@ export default function KatalogPage() {
               {language === 'uz' ? 'Kategoriyalar' : 'Категории'}
             </div>
             <div className="flex flex-col gap-2">
-              {CATEGORIES.map(cat => (
+              {dbCategories.map(cat => (
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
@@ -132,7 +141,7 @@ export default function KatalogPage() {
                       : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                 >
-                  {language === 'uz' ? cat.labelUz : cat.labelRu}
+                  {language === 'uz' ? (cat.name_uz || cat.name) : (cat.name_ru || cat.name_uz || cat.name)}
                 </button>
               ))}
             </div>

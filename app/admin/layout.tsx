@@ -77,7 +77,6 @@ export default function AdminLayout({
             { href: "/admin/content/steps", label: "Qadamlar" },
             { href: "/admin/content/brands", label: "Brendlar" },
             { href: "/admin/content/reorder", label: "Qayta buyurtma" },
-            { href: "/admin/content/categories", label: "Bosh sahifa kategoriyalari" },
             { href: "/admin/content/faq", label: "FAQ (Savollar)" },
             { href: "/admin/content/cta", label: "Namuna (CTA)" },
             { href: "/admin/content/reviews", label: "Mijozlar fikrlari" },

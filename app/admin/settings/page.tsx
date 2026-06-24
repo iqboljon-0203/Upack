@@ -28,7 +28,7 @@ export default function AdminSettings() {
         setProducts(prodData || []);
 
         // Fetch existing settings
-        const settingsRes = await fetch('/api/admin/content?id=cart_limits');
+        const settingsRes = await fetch(`/api/admin/content?id=cart_limits&t=${Date.now()}`);
         const settingsData = await settingsRes.json();
         
         if (settingsData && settingsData.data) {
