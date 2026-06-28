@@ -131,18 +131,44 @@ export default function KatalogPage() {
               {language === 'uz' ? 'Kategoriyalar' : 'Категории'}
             </div>
             <div className="flex flex-col gap-2">
-              {dbCategories.map(cat => (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    activeCategory === cat.id 
-                      ? 'bg-primary-50 text-primary-700' 
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                  }`}
-                >
-                  {language === 'uz' ? (cat.name_uz || cat.name) : (cat.name_ru || cat.name_uz || cat.name)}
-                </button>
+              <button
+                onClick={() => setActiveCategory("all")}
+                className={`text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  activeCategory === "all" 
+                    ? 'bg-primary-50 text-primary-700' 
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                {language === 'uz' ? "Barcha mahsulotlar" : "Все товары"}
+              </button>
+              
+              {dbCategories.filter(c => !c.parent_id && c.id !== 'all').map(parentCat => (
+                <div key={parentCat.id} className="flex flex-col gap-1">
+                  <button
+                    onClick={() => setActiveCategory(parentCat.id)}
+                    className={`text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      activeCategory === parentCat.id 
+                        ? 'bg-primary-50 text-primary-700' 
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    }`}
+                  >
+                    {language === 'uz' ? (parentCat.name_uz || parentCat.name) : (parentCat.name_ru || parentCat.name_uz || parentCat.name)}
+                  </button>
+                  
+                  {dbCategories.filter(c => c.parent_id === parentCat.id).map(childCat => (
+                    <button
+                      key={childCat.id}
+                      onClick={() => setActiveCategory(childCat.id)}
+                      className={`text-left pl-8 pr-4 py-2 rounded-lg text-xs font-medium transition-colors relative before:content-[''] before:absolute before:left-4 before:top-1/2 before:w-2 before:h-[1px] before:bg-slate-300 ${
+                        activeCategory === childCat.id 
+                          ? 'bg-slate-50 text-primary-600 font-bold' 
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      {language === 'uz' ? (childCat.name_uz || childCat.name) : (childCat.name_ru || childCat.name_uz || childCat.name)}
+                    </button>
+                  ))}
+                </div>
               ))}
             </div>
           </div>

@@ -697,10 +697,36 @@ export default function Home() {
               <h3 className="text-2xl font-bold text-slate-900 mb-2">{language === 'uz' ? 'Namuna buyurtma qilish' : 'Заказ образцов'}</h3>
               <p className="text-slate-500 mb-6">{language === 'uz' ? "Aloqa ma'lumotlaringizni qoldiring, menejerimiz sizga bepul namunalar to'plamini yuboradi." : "Оставьте свои контактные данные, и наш менеджер отправит вам бесплатный набор образцов."}</p>
               
-              <form onSubmit={(e) => {
+              <form onSubmit={async (e) => {
                 e.preventDefault();
-                setIsSampleModalOpen(false);
-                toast.success(language === 'uz' ? "Arizangiz qabul qilindi! Menejerimiz tez orada bog'lanadi." : "Ваша заявка принята! Менеджер свяжется с вами в ближайшее время.");
+                const form = e.target as HTMLFormElement;
+                const nameInput = form.querySelector('input[type="text"]') as HTMLInputElement;
+                const phoneInput = form.querySelector('input[type="tel"]') as HTMLInputElement;
+                
+                const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = language === 'uz' ? 'Yuborilmoqda...' : 'Отправка...';
+                submitBtn.disabled = true;
+
+                try {
+                  const res = await fetch('/api/sample', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: nameInput.value, phone: phoneInput.value })
+                  });
+                  const json = await res.json();
+                  if (json.success) {
+                    setIsSampleModalOpen(false);
+                    toast.success(language === 'uz' ? "Arizangiz qabul qilindi! Menejerimiz tez orada bog'lanadi." : "Ваша заявка принята! Менеджер свяжется с вами в ближайшее время.");
+                  } else {
+                    toast.error(json.message || "Xatolik yuz berdi");
+                  }
+                } catch (err) {
+                  toast.error("Xatolik yuz berdi");
+                } finally {
+                  submitBtn.innerText = originalText;
+                  submitBtn.disabled = false;
+                }
               }} className="flex flex-col gap-4">
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-1">{language === 'uz' ? 'Ismingiz' : 'Ваше имя'}</label>
@@ -710,7 +736,7 @@ export default function Home() {
                   <label className="block text-sm font-bold text-slate-700 mb-1">{language === 'uz' ? 'Telefon raqam' : 'Номер телефона'}</label>
                   <input required type="tel" placeholder="+998 90 123 45 67" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all" />
                 </div>
-                <button type="submit" className="w-full bg-primary-600 text-white font-bold py-3.5 rounded-xl hover:bg-primary-700 transition-colors mt-2 shadow-lg shadow-primary-600/20">
+                <button type="submit" className="w-full bg-primary-600 text-white font-bold py-3.5 rounded-xl hover:bg-primary-700 transition-colors mt-2 shadow-lg shadow-primary-600/20 disabled:opacity-50 disabled:cursor-not-allowed">
                   {language === 'uz' ? 'Ariza qoldirish' : 'Отправить заявку'}
                 </button>
               </form>
