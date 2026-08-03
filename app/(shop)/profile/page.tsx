@@ -361,7 +361,7 @@ function OrdersList({ language }: { language: string }) {
               <div key={item.id} className="flex justify-between items-center text-sm">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white rounded-lg border border-slate-200 overflow-hidden shrink-0">
-                    <img src={item.products?.image || '/logo.svg'} className="w-full h-full object-cover" alt="" />
+                    <img src={item.products?.image || '/logo.svg'} className="w-full h-full object-contain p-1" alt="" />
                   </div>
                   <span className="font-medium text-slate-700">{item.products?.name || 'Mahsulot'} x {item.quantity}</span>
                 </div>

@@ -148,7 +148,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   onClick={() => setActiveImage(idx)}
                   className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all shrink-0 ${activeImage === idx ? 'border-primary-600' : 'border-transparent hover:border-slate-300'}`}
                 >
-                  <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
+                  <img src={img} alt="thumbnail" className="w-full h-full object-contain p-1 bg-white" />
                 </button>
               ))}
             </div>
@@ -309,7 +309,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   <img 
                     src={p.image} 
                     alt={cleanName(p.name)} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1558000143-a61254bf5228?q=80&w=800&auto=format&fit=crop' }}
                   />
                 </div>

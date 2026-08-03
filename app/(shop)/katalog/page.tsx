@@ -75,7 +75,10 @@ export default function KatalogPage() {
   }, []);
 
   const filteredProducts = productsData.filter((product) => {
-    const matchCategory = activeCategory === "all" || product.category_id === activeCategory;
+    const isExactMatch = product.category_id === activeCategory;
+    const isSubcategoryMatch = dbCategories.some(cat => cat.id === product.category_id && cat.parent_id === activeCategory);
+    
+    const matchCategory = activeCategory === "all" || isExactMatch || isSubcategoryMatch;
     const matchSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchCategory && matchSearch;
   }).sort((a, b) => {
@@ -206,7 +209,7 @@ export default function KatalogPage() {
                           <img 
                             src={product.image} 
                             alt={product.name} 
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain p-2"
                             onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1558000143-a61254bf5228?q=80&w=800&auto=format&fit=crop' }}
                           />
                         </Link>

@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       authenticated: true,
       user: {
+        id: sessionData.userId,
         chatId: sessionData.chatId,
         username: sessionData.username,
         firstName: sessionData.firstName,

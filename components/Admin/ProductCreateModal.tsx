@@ -13,12 +13,17 @@ interface ProductCreateModalProps {
 
 export default function ProductCreateModal({ isOpen, onClose, onSuccess, initialData, categories = [] }: ProductCreateModalProps) {
   const [name, setName] = useState("");
+  const [nameRu, setNameRu] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [descriptionRu, setDescriptionRu] = useState("");
   const [inStock, setInStock] = useState(true);
   const [minOrder, setMinOrder] = useState("1");
   const [step, setStep] = useState("1");
+  const [unit, setUnit] = useState("dona");
+  const [boxQuantity, setBoxQuantity] = useState("");
+  const [variantLabel, setVariantLabel] = useState("O'lcham / Hajm");
   
   const [variants, setVariants] = useState<{ id: string, name: string, price: string }[]>([]);
   
@@ -32,26 +37,39 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
     if (isOpen) {
       if (initialData) {
         setName(initialData.name || "");
+        setNameRu(initialData.name_ru || "");
         setCategoryId(initialData.category_id || (categories.length > 0 ? categories[0].id : ""));
         setPrice(initialData.price?.toString() || "");
         setDescription(initialData.full_desc || "");
+        setDescriptionRu(initialData.full_desc_ru || "");
         setInStock(initialData.inStock !== false); // default true if undefined
         setMinOrder(initialData.minOrder?.toString() || "1");
         
         const stepOpt = initialData.options?.find((o: any) => o.name === "Step");
         setStep(stepOpt ? stepOpt.values[0] : "1");
+        
+        setUnit(initialData.unit || "dona");
+        setBoxQuantity(initialData.box_quantity?.toString() || "");
+
+        const variantOpt = initialData.options?.find((o: any) => o.name !== "Step");
+        setVariantLabel(variantOpt ? variantOpt.name : "O'lcham / Hajm");
 
         setVariants(initialData.variants || []);
         setImagePreview(initialData.image || null);
         setImageFile(null);
       } else {
         setName("");
+        setNameRu("");
         setCategoryId(categories.length > 0 ? categories[0].id : "");
         setPrice("");
         setDescription("");
+        setDescriptionRu("");
         setInStock(true);
         setMinOrder("1");
         setStep("1");
+        setUnit("dona");
+        setBoxQuantity("");
+        setVariantLabel("O'lcham / Hajm");
         setVariants([]);
         setImagePreview(null);
         setImageFile(null);
@@ -151,7 +169,7 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
         finalImageUrl = uploadJson.url;
       }
 
-      const finalOptions = variants.length > 0 ? [{ name: "O'lcham / Hajm", values: variants.map(v => v.name) }] : [];
+      const finalOptions = variants.length > 0 ? [{ name: variantLabel || "O'lcham / Hajm", values: variants.map(v => v.name) }] : [];
       if (parseInt(step) > 1) {
         finalOptions.push({ name: "Step", values: [step.toString()] });
       }
@@ -159,11 +177,15 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
       // 2. Save or Update Product via Admin API to bypass RLS
       const productData = {
         name,
+        name_ru: nameRu,
         category_id: categoryId,
         price: parseFloat(price),
         full_desc: description,
+        full_desc_ru: descriptionRu,
         inStock: inStock,
         minOrder: parseInt(minOrder) || 1,
+        unit: unit,
+        box_quantity: boxQuantity ? parseInt(boxQuantity) : null,
         image: finalImageUrl,
         variants: variants,
         options: finalOptions
@@ -210,15 +232,27 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
 
         <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-bold text-slate-700 mb-2">Mahsulot nomi *</label>
-              <input 
-                type="text" 
-                value={name}
-                onChange={e => setName(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all" 
-                placeholder="Masalan: Bir martalik stakan" 
-              />
+            <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Mahsulot nomi (O'zbekcha) *</label>
+                <input 
+                  type="text" 
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all" 
+                  placeholder="Masalan: Bir martalik stakan" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Mahsulot nomi (Ruscha)</label>
+                <input 
+                  type="text" 
+                  value={nameRu}
+                  onChange={e => setNameRu(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all" 
+                  placeholder="Например: Одноразовый стакан" 
+                />
+              </div>
             </div>
             
             <div>
@@ -270,6 +304,33 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">O'lchov birligi</label>
+              <select 
+                value={unit}
+                onChange={e => setUnit(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all"
+              >
+                <option value="dona">Dona</option>
+                <option value="karobka">Karobka</option>
+                <option value="kg">Kg</option>
+                <option value="rulon">Rulon</option>
+                <option value="litr">Litr</option>
+                <option value="metr">Metr</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Karobkadagi soni (Ixtiyoriy)</label>
+              <input 
+                type="number" 
+                value={boxQuantity}
+                onChange={e => setBoxQuantity(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all" 
+                placeholder="Masalan: 500" 
+              />
+            </div>
+
             <div className="flex flex-col justify-center">
               <label className="block text-sm font-bold text-slate-700 mb-3">Holati (Omborda)</label>
               <label className="relative inline-flex items-center cursor-pointer w-max">
@@ -291,7 +352,7 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className="font-bold text-slate-900">Mahsulot variatsiyalari (Ixtiyoriy)</h3>
-                  <p className="text-xs text-slate-500">Bitta mahsulotning har xil hajmi yoki o'lchami bo'lsa kiriting (masalan, 300ml, 500ml)</p>
+                  <p className="text-xs text-slate-500">Bitta mahsulotning har xil hajmi, rangi yoki o'lchami bo'lsa kiriting</p>
                 </div>
                 <button 
                   type="button" 
@@ -301,6 +362,18 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
                   <Plus size={14} /> Qo'shish
                 </button>
               </div>
+
+              {variants.length > 0 && (
+                <div className="mb-4">
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">Ko'rsatkich nomi (Masalan: Rang, Hajm, O'lcham)</label>
+                  <input 
+                    type="text" 
+                    value={variantLabel}
+                    onChange={e => setVariantLabel(e.target.value)}
+                    className="w-full sm:w-1/2 bg-white border border-slate-200 focus:border-primary-500 rounded-xl py-2 px-3 outline-none text-sm" 
+                  />
+                </div>
+              )}
 
               {variants.length > 0 ? (
                 <div className="space-y-3">
@@ -341,15 +414,27 @@ export default function ProductCreateModal({ isOpen, onClose, onSuccess, initial
               )}
             </div>
 
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-bold text-slate-700 mb-2">To'liq ma'lumot (Tavsif)</label>
-              <textarea 
-                rows={4} 
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all resize-none" 
-                placeholder="Mahsulot haqida ma'lumot kiriting..."
-              ></textarea>
+            <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">To'liq ma'lumot (Tavsif - O'zbekcha)</label>
+                <textarea 
+                  rows={4} 
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all resize-none" 
+                  placeholder="Mahsulot haqida ma'lumot kiriting..."
+                ></textarea>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">To'liq ma'lumot (Tavsif - Ruscha)</label>
+                <textarea 
+                  rows={4} 
+                  value={descriptionRu}
+                  onChange={e => setDescriptionRu(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl py-3 px-4 outline-none transition-all resize-none" 
+                  placeholder="Введите информацию о продукте..."
+                ></textarea>
+              </div>
             </div>
 
             <div className="sm:col-span-2">

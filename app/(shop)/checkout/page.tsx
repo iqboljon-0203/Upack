@@ -23,6 +23,7 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState("");
   const [comment, setComment] = useState("");
   const [coordinates, setCoordinates] = useState<number[] | null>(null);
+  const [authUserId, setAuthUserId] = useState<string | null>(null);
 
   const [checkingAuth, setCheckingAuth] = useState(true);
 
@@ -37,6 +38,9 @@ export default function CheckoutPage() {
           toast.error(language === 'uz' ? "Buyurtma berish uchun tizimga kirishingiz shart!" : "Для оформления заказа необходимо войти в систему!");
           router.push("/login?redirect=/checkout");
         } else {
+          if (data.user?.id) {
+            setAuthUserId(data.user.id);
+          }
           setCheckingAuth(false);
         }
       } catch (err) {
@@ -65,10 +69,8 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
     
     try {
-      // Get the Supabase user id if authenticated
-      const { supabase } = await import("@/lib/supabase");
-      const { data: { session } } = await supabase.auth.getSession();
-      const userId = session?.user?.id;
+      // Use the userId from the auth API check
+      const userId = authUserId;
 
       const finalAddress = coordinates 
         ? `${address}\n(Xarita: https://yandex.com/maps/?pt=${coordinates[1]},${coordinates[0]}&z=18&l=map)` 
@@ -263,7 +265,7 @@ export default function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.id} className="flex gap-4">
                   <div className="w-16 h-16 shrink-0 bg-slate-50 rounded-lg overflow-hidden border border-slate-100">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                    <img src={item.image} alt={item.name} className="w-full h-full object-contain p-1" />
                   </div>
                   <div className="flex-1 flex flex-col justify-center">
                     <h4 className="text-sm font-bold text-slate-900 line-clamp-1">{item.name}</h4>

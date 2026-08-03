@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
     // Session yaratamiz, lekin Supabase sessiyasini ham clientga qaytaramiz
     const sessionToken = Buffer.from(
       JSON.stringify({
+        userId: authData.user.id,
         chatId: result.chatId,
         username: result.username,
         firstName: result.firstName,

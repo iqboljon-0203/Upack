@@ -88,7 +88,7 @@ export default function FavoritesPage() {
                     <img 
                       src={item.image} 
                       alt={cleanName(item.name)} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
                       onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1558000143-a61254bf5228?q=80&w=800&auto=format&fit=crop' }}
                     />
                   </Link>
