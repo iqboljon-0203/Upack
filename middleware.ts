@@ -37,10 +37,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  // If a non-admin subdomain requests /admin, redirect to admin.upackb2b.uz
+  // If a non-admin subdomain requests /admin, redirect to admin.restock.uz
   if (!isAdminSubdomain && url.pathname.startsWith('/admin')) {
     const isLocal = hostname.includes('localhost') || hostname.includes('127.0.0.1');
-    const adminDomain = isLocal ? `admin.localhost:3000` : `admin.upackb2b.uz`;
+    const adminDomain = isLocal ? `admin.localhost:3000` : `admin.restock.uz`;
     const protocol = isLocal ? 'http' : 'https';
     
     const newPath = url.pathname.replace(/^\/admin/, '') || '/';

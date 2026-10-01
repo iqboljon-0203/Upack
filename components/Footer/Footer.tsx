@@ -11,7 +11,7 @@ export default function Footer() {
     desc_uz: "O'zbekistondagi eng yirik B2B platforma. Biznesingiz uchun sifatli qadoqlash vositalari.",
     desc_ru: "Крупнейшая B2B платформа в Узбекистане. Качественные упаковочные материалы для вашего бизнеса.",
     phone: "+998 90 901 39 38",
-    email: "info@upackb2b.uz",
+    email: "info@restock.uz",
     address_uz: "Toshkent shahri, Yunusobod tumani",
     address_ru: "г. Ташкент, Юнусабадский район",
     instagram: "https://www.instagram.com/upackuz?igsh=ZmJ0emdlZHRrb2J",
@@ -47,9 +47,9 @@ export default function Footer() {
                 maskRepeat: 'no-repeat',
                 maskPosition: 'center',
               }}
-              aria-label="UPack Logo"
+              aria-label="Restock Logo"
             />
-            <span className="text-2xl font-extrabold text-white tracking-tight">UPack</span>
+            <span className="text-2xl font-extrabold text-white tracking-tight">Restock</span>
           </Link>
           <p className="text-sm leading-relaxed mb-6">
             {language === 'uz' ? footerData.desc_uz : footerData.desc_ru}
@@ -111,7 +111,7 @@ export default function Footer() {
 
       </div>
       <div className="container mx-auto px-6 mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p>&copy; {new Date().getFullYear()} UPack. {t('footer.rights')}</p>
+        <p>&copy; {new Date().getFullYear()} Restock. {t('footer.rights')}</p>
         <p className="text-slate-600 text-xs text-center md:text-right">
           Created by <span className="font-semibold text-primary-500 ml-1">Dream Tech IT Agency</span>
         </p>

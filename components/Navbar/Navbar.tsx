@@ -51,9 +51,9 @@ export default function Navbar() {
     >
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         
-        <Link href="/" className="flex items-center gap-1">
+        <Link href="/" className="flex items-center gap-1.5">
           <div 
-            className="w-16 h-16 bg-primary-600 shrink-0"
+            className="w-14 h-14 bg-primary-600 shrink-0"
             style={{
               WebkitMaskImage: 'url(/logo.svg)',
               WebkitMaskSize: 'contain',
@@ -64,9 +64,9 @@ export default function Navbar() {
               maskRepeat: 'no-repeat',
               maskPosition: 'center',
             }}
-            aria-label="UPack Logo"
+            aria-label="Restock Logo"
           />
-          <span className="text-3xl font-extrabold tracking-tighter text-primary-600 hidden sm:block leading-none">UPack</span>
+          <span className="text-3xl font-extrabold tracking-tighter text-primary-600 hidden sm:block leading-none">Restock</span>
         </Link>
 
         <div className="hidden md:flex flex-1 max-w-md mx-8 relative">

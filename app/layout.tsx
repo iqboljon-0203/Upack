@@ -3,56 +3,102 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from 'sonner';
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
+const jakarta = Plus_Jakarta_Sans({ 
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
+});
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://upackb2b.uz"),
+  metadataBase: new URL("https://restock.uz"),
   title: {
-    default: "UPack - O'zbekistonda B2B Qadoqlash va Gigiyena Yechimlari",
-    template: "%s | UPack Toshkent"
+    default: "Restock.uz - Qadoqlash Materiallari va Bir Martalik Idishlar Optom Toshkent",
+    template: "%s | Restock.uz"
   },
-  description: "UPackB2B.uz - O'zbekiston, Toshkent bo'ylab B2B mijozlar uchun sifatli qadoqlash materiallari, bir martalik idishlar, qog'oz mahsulotlari ulgurji yetkazib beruvchi hamkor.",
+  description: "Restock.uz - O'zbekistonda B2B qadoqlash materiallari va bir martalik idishlar ulgurji savdo platformasi. Toshkent bo'ylab gofrakarton qutilar, kraft paketlar, skotch, qog'oz stakanlar, plastik idishlar va xo'jalik mollarini eng arzon ulgurji (optom) narxlarda xarid qiling. Tezkor yetkazib berish!",
   keywords: [
-    "qadoqlash toshkent", "qadoqlash materiallari o'zbekiston", "upack", "upack uzbekistan", "upack toshkent", "bir martalik idishlar", 
-    "xo'jalik mollari", "gofrakarton", "skotch", "paketlar", "maishiy kimyo", "toshkent qadoqlash", "upackb2b",
-    "odnorazovaya posuda tashkent", "odnorazovaya posuda optom uzbekistan", "bir martalik idishlar optom toshkent",
-    "qog'oz stakanlar", "b2b qadoqlash o'zbekiston", "upakovka optom tashkent"
+    // Uzbek asosiy kalit so'zlar
+    "qadoqlash materiallari", "qadoqlash toshkent", "qadoqlash materiallari optom", "qadoqlash vositalari",
+    "bir martalik idishlar", "bir martalik idishlar optom toshkent", "bir martalik idishlar narxlari",
+    "bir martalik stakanlar", "qog'oz stakanlar", "qog'oz stakan optom", "kofe stakanlari",
+    "gofrakarton", "gofrakarton qutilar", "karton korobkalar toshkent", "qutilar optom", "korobkalar optom",
+    "skotch", "skotch optom", "skotch toshkent", "streych plyonka", "strech plenka optom",
+    "kraft paketlar", "kraft paket toshkent", "paketlar optom", "mayka paketlar", "polietilen paketlar",
+    "fast food qadoqlari", "burger qutisi", "pizza qutisi", "konteynerlar", "plastik konteynerlar",
+    "plastik idishlar", "sous idishlari", "alyumin qoliplar",
+    "xo'jalik mollari", "xo'jalik mollari optom", "maishiy kimyo toshkent", "tozalash vositalari",
+    "salfetkalar", "tualet qog'ozi optom", "qog'oz sochiqlar",
+    "restock", "restock uz", "restock.uz", "restock toshkent", "restock uzbekistan", "b2b qadoqlash", "ulgurji savdo toshkent",
+    
+    // Ruscha yuqori talabli kalit so'zlar (Yandex va Google RU)
+    "упаковочные материалы ташкент", "упаковка оптом узбекистан", "упаковочные материалы",
+    "одноразовая посуда ташкент", "одноразовая посуда оптом ташкент", "одноразовая посуда",
+    "бумажные стаканчики", "бумажные стаканы оптом", "стаканы для кофе",
+    "гофрокартон ташкент", "картонные коробки оптом", "коробки для пиццы",
+    "крафт пакеты ташкент", "пакеты майка оптом", "полиэтиленовые пакеты",
+    "скотч упаковочный оптом", "стрейч пленка ташкент", "стрейч пленка оптом",
+    "упаковка для фастфуда", "ланч боксы", "контейнеры для еды", "соусники пластиковые",
+    "хозяйственные товары оптом", "бытовая химия ташкент", "салфетки бумажные оптом",
+    "ресток", "ресток уз", "b2b упаковка ташкент"
   ],
-  authors: [{ name: "UPack Uzbekistan" }],
-  creator: "UPack Team",
-  publisher: "UPack",
+  authors: [{ name: "Restock Uzbekistan", url: "https://restock.uz" }],
+  creator: "Restock Team",
+  publisher: "Restock.uz",
+  category: "ecommerce",
+  classification: "B2B E-commerce Wholesale Packaging and Tableware",
   robots: {
     index: true,
     follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   alternates: {
-    canonical: "https://upackb2b.uz",
+    canonical: "https://restock.uz",
+    languages: {
+      "uz-UZ": "https://restock.uz",
+      "ru-RU": "https://restock.uz",
+    },
   },
   openGraph: {
     type: "website",
     locale: "uz_UZ",
-    url: "https://upackb2b.uz",
-    siteName: "UPackB2B.uz",
-    title: "UPack - Toshkentda Qadoqlash va Gigiyena Yechimlari",
-    description: "B2B va ulgurji mijozlar uchun ishonchli hamkor. Toshkent bo'ylab tez yetkazib berish xizmati.",
+    url: "https://restock.uz",
+    siteName: "Restock.uz",
+    title: "Restock.uz - Qadoqlash Materiallari va Bir Martalik Idishlar Optom Toshkent",
+    description: "B2B va ulgurji mijozlar uchun ishonchli hamkor. Qadoqlash materiallari, bir martalik idishlar, gofrakarton qutilar va xo'jalik mollari ulgurji narxda.",
     images: [
       {
-        url: "/hero-bg.png",
+        url: "https://restock.uz/logo-full.png",
         width: 1200,
         height: 630,
-        alt: "UPack qadoqlash yechimlari",
+        alt: "Restock.uz B2B Qadoqlash Yechimlari",
       }
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "UPack - O'zbekistonda Qadoqlash Yechimlari",
-    description: "B2B mijozlar uchun qadoqlash va gigiyena mahsulotlari ulgurji yetkazib beruvchisi.",
-    images: ["/hero-bg.png"],
+    title: "Restock.uz - O'zbekistonda B2B Qadoqlash Materiallari",
+    description: "B2B mijozlar uchun sifatli qadoqlash va bir martalik idishlar ulgurji yetkazib beruvchisi.",
+    images: ["https://restock.uz/logo-full.png"],
   },
   icons: {
-    icon: "/logo.svg",
-    apple: "/logo.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/logo.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  other: {
+    "theme-color": "#008ca7",
+    "geo.region": "UZ-TO",
+    "geo.placename": "Tashkent",
+    "format-detection": "telephone=no",
   },
   verification: {
     google: "YOUR_GOOGLE_VERIFICATION_CODE", // Google Search Console verification code

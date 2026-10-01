@@ -88,9 +88,9 @@ export default function MobileMenu() {
         >
           {/* Header */}
           <div className="container mx-auto px-6 h-20 flex items-center justify-between shrink-0">
-            <Link href="/" className="flex items-center gap-1" onClick={() => setIsOpen(false)}>
+            <Link href="/" className="flex items-center gap-1.5" onClick={() => setIsOpen(false)}>
               <div 
-                className="w-16 h-16 bg-primary-600 shrink-0"
+                className="w-14 h-14 bg-primary-600 shrink-0"
                 style={{
                   WebkitMaskImage: 'url(/logo.svg)',
                   WebkitMaskSize: 'contain',
@@ -101,8 +101,9 @@ export default function MobileMenu() {
                   maskRepeat: 'no-repeat',
                   maskPosition: 'center',
                 }}
+                aria-label="Restock Logo"
               />
-              <span className="text-3xl font-extrabold tracking-tighter text-primary-600 leading-none">UPack</span>
+              <span className="text-3xl font-extrabold tracking-tighter text-primary-600 leading-none">Restock</span>
             </Link>
             <button
               onClick={() => setIsOpen(false)}

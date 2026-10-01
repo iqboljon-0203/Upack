@@ -183,7 +183,7 @@ export default function Home() {
     desc_uz: "Biz bilan ishlayotgan hamkorlarimiz qanday fikrda.",
     desc_ru: "Что говорят о нас наши партнеры.",
     reviews: [
-      { text_uz: "UPack bilan hamkorlik qilish juda qulay. Yetkazib berish doim o'z vaqtida, mahsulot sifati esa yuqori darajada.", text_ru: "Сотрудничать с UPack очень удобно. Доставка всегда вовремя, а качество продукции на высшем уровне.", author_uz: "Aziz Rahimov", author_ru: "Азиз Рахимов", role_uz: "Cafe Noir rahbari", role_ru: "Руководитель Cafe Noir", rating: 5 },
+      { text_uz: "Restock bilan hamkorlik qilish juda qulay. Yetkazib berish doim o'z vaqtida, mahsulot sifati esa yuqori darajada.", text_ru: "Сотрудничать с Restock очень удобно. Доставка всегда вовремя, а качество продукции на высшем уровне.", author_uz: "Aziz Rahimov", author_ru: "Азиз Рахимов", role_uz: "Cafe Noir rahbari", role_ru: "Руководитель Cafe Noir", rating: 5 },
       { text_uz: "B2B xaridlar uchun juda qulay narxlar va keng assortiment. Qadoqlash vositalarini doim shu yerdan buyurtma qilamiz.", text_ru: "Очень выгодные цены и широкий ассортимент для B2B закупок. Упаковочные материалы всегда заказываем здесь.", author_uz: "Nodir Aliyev", author_ru: "Нодир Алиев", role_uz: "Burger House menejeri", role_ru: "Менеджер Burger House", rating: 4.5 },
       { text_uz: "Gigiyenik vositalar va tozalash kimyoviy moddalari borasida ishonchli ta'minotchi. Xizmat ko'rsatish a'lo.", text_ru: "Надежный поставщик гигиенических средств и чистящей химии. Отличное обслуживание.", author_uz: "Malika Umarova", author_ru: "Малика Умарова", role_uz: "Sweet Bake asoschisi", role_ru: "Основатель Sweet Bake", rating: 5 },
       { text_uz: "Ajoyib xizmat! Yirik buyurtmalarga tezkor javob va sifatli mahsulotlar tufayli biznesimiz yana ham rivojlandi.", text_ru: "Отличный сервис! Быстрый ответ на крупные заказы и качественная продукция помогли нашему бизнесу развиваться.", author_uz: "Sardor Karimov", author_ru: "Сардор Каримов", role_uz: "Evos Ta'minot bo'limi", role_ru: "Отдел снабжения Evos", rating: 5 },
@@ -271,26 +271,66 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "B2BBusiness",
-            "name": "UPack",
-            "url": "https://upackb2b.uz",
-            "logo": "https://upackb2b.uz/logo.svg",
-            "image": "https://upackb2b.uz/hero-bg.png",
-            "description": "O'zbekistonda B2B qadoqlash platformasi. Sifatli qadoqlash materiallari va bir martalik idishlar ulgurji savdosi.",
-            "address": {
-              "@type": "PostalAddress",
-              "addressLocality": "Toshkent",
-              "addressCountry": "UZ"
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Restock.uz",
+              "alternateName": "Restock",
+              "url": "https://restock.uz",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://restock.uz/katalog?search={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
             },
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "contactType": "Mijozlarni qo'llab-quvvatlash",
-              "areaServed": "UZ",
-              "availableLanguage": ["Uzbek", "Russian"]
+            {
+              "@context": "https://schema.org",
+              "@type": "WholesaleStore",
+              "name": "Restock.uz",
+              "alternateName": "Restock B2B Qadoqlash Materiallari",
+              "url": "https://restock.uz",
+              "logo": "https://restock.uz/logo-full.png",
+              "image": "https://restock.uz/logo-full.png",
+              "description": "O'zbekistonda B2B qadoqlash materiallari va bir martalik idishlar ulgurji savdo platformasi. Gofrakarton qutilar, kraft paketlar, skotch, qog'oz stakanlar va xo'jalik mollari ulgurji narxda.",
+              "telephone": "+998 90 901 39 38",
+              "priceRange": "$$",
+              "currenciesAccepted": "UZS",
+              "paymentAccepted": "Cash, Payme, Click, Bank Transfer",
+              "openingHours": "Mo,Tu,We,Th,Fr,Sa 09:00-18:00",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Yunusobod tumani",
+                "addressLocality": "Toshkent",
+                "addressRegion": "Toshkent",
+                "postalCode": "100000",
+                "addressCountry": "UZ"
+              },
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+998 90 901 39 38",
+                "contactType": "sales",
+                "areaServed": "UZ",
+                "availableLanguage": ["Uzbek", "Russian"]
+              },
+              "sameAs": [
+                "https://t.me/upackuz",
+                "https://www.instagram.com/upackuz"
+              ]
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": (faqData?.items || []).map((item: any) => ({
+                "@type": "Question",
+                "name": language === 'uz' ? item.q_uz : item.q_ru,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": language === 'uz' ? item.a_uz : item.a_ru
+                }
+              }))
             }
-          })
+          ])
         }}
       />
       

@@ -36,9 +36,9 @@ export default function AdminLayout({
               maskRepeat: 'no-repeat',
               maskPosition: 'center',
             }}
-            aria-label="UPack Logo"
+            aria-label="Restock Logo"
           />
-          <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-primary-950 to-primary-700 bg-clip-text text-transparent">UPack Panel</span>
+          <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-primary-950 to-primary-700 bg-clip-text text-transparent">Restock Panel</span>
         </Link>
         <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
           <X size={20} />

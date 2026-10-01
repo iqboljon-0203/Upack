@@ -121,6 +121,62 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   return (
     <div className="container mx-auto px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "name": cleanName(language === 'uz' ? product.name_uz || product.name : product.name_ru || product.name),
+              "image": product.image ? [product.image] : ["https://restock.uz/logo-full.png"],
+              "description": cleanName(language === 'uz' ? product.desc_uz || product.description || product.name : product.desc_ru || product.description || product.name),
+              "sku": String(product.id),
+              "brand": {
+                "@type": "Brand",
+                "name": "Restock"
+              },
+              "offers": {
+                "@type": "Offer",
+                "url": `https://restock.uz/mahsulot/${product.id}`,
+                "priceCurrency": "UZS",
+                "price": currentPrice,
+                "priceValidUntil": "2027-12-31",
+                "itemCondition": "https://schema.org/NewCondition",
+                "availability": product.in_stock !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                "seller": {
+                  "@type": "Organization",
+                  "name": "Restock.uz"
+                }
+              }
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": language === 'uz' ? "Bosh sahifa" : "Главная",
+                  "item": "https://restock.uz"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": language === 'uz' ? "Katalog" : "Каталог",
+                  "item": "https://restock.uz/katalog"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": cleanName(product.name),
+                  "item": `https://restock.uz/mahsulot/${product.id}`
+                }
+              ]
+            }
+          ])
+        }}
+      />
       <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 font-medium mb-8">
         <Link href="/" className="hover:text-primary-600 transition-colors">{language === 'uz' ? 'Bosh sahifa' : 'Главная'}</Link>
         <span className="text-slate-300">/</span>

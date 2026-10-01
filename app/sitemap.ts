@@ -2,24 +2,21 @@ import { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://upackb2b.uz";
+  const baseUrl = "https://restock.uz";
 
   // Static routes
   const routes = [
-    "",
-    "/katalog",
-    "/favorites",
-    "/cart",
-    "/about",
-    "/delivery",
-    "/privacy",
-    "/yordam",
-    "/login",
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
+    { route: "", priority: 1.0, changeFrequency: "daily" as const },
+    { route: "/katalog", priority: 0.95, changeFrequency: "daily" as const },
+    { route: "/about", priority: 0.7, changeFrequency: "monthly" as const },
+    { route: "/delivery", priority: 0.7, changeFrequency: "monthly" as const },
+    { route: "/yordam", priority: 0.7, changeFrequency: "monthly" as const },
+    { route: "/privacy", priority: 0.5, changeFrequency: "yearly" as const },
+  ].map((item) => ({
+    url: `${baseUrl}${item.route}`,
     lastModified: new Date().toISOString(),
-    changeFrequency: "daily" as const,
-    priority: route === "" ? 1.0 : 0.8,
+    changeFrequency: item.changeFrequency,
+    priority: item.priority,
   }));
 
   // Fetch dynamic categories and products

@@ -11,8 +11,8 @@ export default function AboutContentAdmin() {
   const [data, setData] = useState({
     title_uz: "Biz haqimizda",
     title_ru: "О нас",
-    subtitle_uz: "UPack - O'zbekistondagi yetakchi qadoqlash vositalari va bir martalik idishlar ta'minotchisi.",
-    subtitle_ru: "UPack - ведущий поставщик упаковочных материалов и одноразовой посуды в Узбекистане.",
+    subtitle_uz: "Restock - O'zbekistondagi yetakchi qadoqlash vositalari va bir martalik idishlar ta'minotchisi.",
+    subtitle_ru: "Restock - ведущий поставщик упаковочных материалов и одноразовой посуды в Узбекистане.",
     history_title_uz: "Bizning tariximiz",
     history_title_ru: "Наша история",
     history_desc_uz: "Biz o'z faoliyatimizni kichik bir korxona sifatida boshlaganmiz. Bugungi kunda yuzlab restoranlar, kafelar va bizneslar uchun ishonchli hamkorga aylandik.",
@@ -21,8 +21,8 @@ export default function AboutContentAdmin() {
     goal_title_ru: "Наша цель",
     goal_desc_uz: "Mijozlarimizga eng yuqori sifatli qadoqlash mahsulotlarini, eng hamyonbop narxlarda yetkazib berish orqali ularning biznes rivojiga hissa qo'shish.",
     goal_desc_ru: "Вносить вклад в развитие бизнеса наших клиентов, поставляя высококачественную упаковочную продукцию по самым доступным ценам.",
-    why_title_uz: "Nega aynan UPack?",
-    why_title_ru: "Почему именно UPack?",
+    why_title_uz: "Nega aynan Restock?",
+    why_title_ru: "Почему именно Restock?",
     why_item1_title_uz: "Sifat kafolati:",
     why_item1_title_ru: "Гарантия качества:",
     why_item1_desc_uz: "Barcha mahsulotlarimiz sanitariya-gigiyena talablariga to'la javob beradi.",
@@ -156,7 +156,7 @@ export default function AboutContentAdmin() {
 
         {/* Why Us Section */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <h3 className="font-bold text-lg text-slate-800 border-b border-slate-100 pb-2">Nega aynan UPack? (Afzalliklarimiz)</h3>
+          <h3 className="font-bold text-lg text-slate-800 border-b border-slate-100 pb-2">Nega aynan Restock? (Afzalliklarimiz)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Bo'lim Sarlavhasi</label>
