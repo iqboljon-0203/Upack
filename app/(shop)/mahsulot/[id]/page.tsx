@@ -129,7 +129,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               "@context": "https://schema.org",
               "@type": "Product",
               "name": cleanName(language === 'uz' ? product.name_uz || product.name : product.name_ru || product.name),
-              "image": product.image ? [product.image] : ["https://restock.uz/logo-full.png"],
+              "image": product.image ? [product.image] : ["https://restockb2b.uz/logo-full.png"],
               "description": cleanName(language === 'uz' ? product.desc_uz || product.description || product.name : product.desc_ru || product.description || product.name),
               "sku": String(product.id),
               "brand": {
@@ -138,7 +138,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               },
               "offers": {
                 "@type": "Offer",
-                "url": `https://restock.uz/mahsulot/${product.id}`,
+                "url": `https://restockb2b.uz/mahsulot/${product.id}`,
                 "priceCurrency": "UZS",
                 "price": currentPrice,
                 "priceValidUntil": "2027-12-31",
@@ -146,7 +146,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 "availability": product.in_stock !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
                 "seller": {
                   "@type": "Organization",
-                  "name": "Restock.uz"
+                  "name": "Restockb2b.uz"
                 }
               }
             },
@@ -158,19 +158,19 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   "@type": "ListItem",
                   "position": 1,
                   "name": language === 'uz' ? "Bosh sahifa" : "Главная",
-                  "item": "https://restock.uz"
+                  "item": "https://restockb2b.uz"
                 },
                 {
                   "@type": "ListItem",
                   "position": 2,
                   "name": language === 'uz' ? "Katalog" : "Каталог",
-                  "item": "https://restock.uz/katalog"
+                  "item": "https://restockb2b.uz/katalog"
                 },
                 {
                   "@type": "ListItem",
                   "position": 3,
                   "name": cleanName(product.name),
-                  "item": `https://restock.uz/mahsulot/${product.id}`
+                  "item": `https://restockb2b.uz/mahsulot/${product.id}`
                 }
               ]
             }

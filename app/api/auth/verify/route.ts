@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    const email = `tg_${result.chatId}@upackb2b.uz`;
+    const email = `tg_${result.chatId}@restockb2b.uz`;
     const password = `upack_${result.chatId}_secure_pass_2026`; // deterministik parol
 
     let { data: authData, error: authError } = await supabaseAdmin.auth.signInWithPassword({
@@ -38,7 +38,31 @@ export async function POST(req: NextRequest) {
     });
 
     if (authError && authError.message.includes('Invalid login credentials')) {
-      // User doesn't exist, create it
+      // Check legacy domains
+      const legacyEmails = [
+        `tg_${result.chatId}@upackb2b.uz`,
+        `tg_${result.chatId}@upack.uz`,
+        `tg_${result.chatId}@restock.uz`
+      ];
+
+      for (const legEmail of legacyEmails) {
+        const legacyRes = await supabaseAdmin.auth.signInWithPassword({ email: legEmail, password });
+        if (legacyRes.data?.session) {
+          authData = legacyRes.data;
+          authError = null;
+          // Silently upgrade user email to new restockb2b.uz domain
+          try {
+            await supabaseAdmin.auth.admin.updateUserById(authData.user.id, { email });
+          } catch (e) {
+            console.warn("Could not migrate legacy email:", e);
+          }
+          break;
+        }
+      }
+    }
+
+    if (authError && authError.message.includes('Invalid login credentials')) {
+      // User doesn't exist, create it with new domain
       await supabaseAdmin.auth.admin.createUser({
         email,
         password,

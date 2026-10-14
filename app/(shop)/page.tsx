@@ -275,23 +275,23 @@ export default function Home() {
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "Restock.uz",
-              "alternateName": "Restock",
-              "url": "https://restock.uz",
+              "name": "Restockb2b.uz",
+              "alternateName": "Restock B2B",
+              "url": "https://restockb2b.uz",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://restock.uz/katalog?search={search_term_string}",
+                "target": "https://restockb2b.uz/katalog?search={search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             },
             {
               "@context": "https://schema.org",
               "@type": "WholesaleStore",
-              "name": "Restock.uz",
+              "name": "Restockb2b.uz",
               "alternateName": "Restock B2B Qadoqlash Materiallari",
-              "url": "https://restock.uz",
-              "logo": "https://restock.uz/logo-full.png",
-              "image": "https://restock.uz/logo-full.png",
+              "url": "https://restockb2b.uz",
+              "logo": "https://restockb2b.uz/logo-full.png",
+              "image": "https://restockb2b.uz/logo-full.png",
               "description": "O'zbekistonda B2B qadoqlash materiallari va bir martalik idishlar ulgurji savdo platformasi. Gofrakarton qutilar, kraft paketlar, skotch, qog'oz stakanlar va xo'jalik mollari ulgurji narxda.",
               "telephone": "+998 90 901 39 38",
               "priceRange": "$$",

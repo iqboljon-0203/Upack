@@ -40,7 +40,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: "https://restock.uz/sitemap.xml",
-    host: "https://restock.uz",
+    sitemap: "https://restockb2b.uz/sitemap.xml",
+    host: "https://restockb2b.uz",
   };
 }

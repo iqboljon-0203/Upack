@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
       await sendTelegramMessage(
         chatId,
-        `🔐 <b>UPack - Tizimga kirish kodi</b>\n\n` +
+        `🔐 <b>Restock B2B - Tizimga kirish kodi</b>\n\n` +
         `Sizning kodingiz:\n\n` +
         `<code>${otp}</code>\n\n` +
         `⏱ Kod <b>2 daqiqa</b> ichida amal qiladi.\n` +

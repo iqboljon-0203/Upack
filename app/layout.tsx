@@ -10,12 +10,12 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://restock.uz"),
+  metadataBase: new URL("https://restockb2b.uz"),
   title: {
-    default: "Restock.uz - Qadoqlash Materiallari va Bir Martalik Idishlar Optom Toshkent",
-    template: "%s | Restock.uz"
+    default: "Restock B2B - Qadoqlash Materiallari va Bir Martalik Idishlar Optom Toshkent",
+    template: "%s | Restockb2b.uz"
   },
-  description: "Restock.uz - O'zbekistonda B2B qadoqlash materiallari va bir martalik idishlar ulgurji savdo platformasi. Toshkent bo'ylab gofrakarton qutilar, kraft paketlar, skotch, qog'oz stakanlar, plastik idishlar va xo'jalik mollarini eng arzon ulgurji (optom) narxlarda xarid qiling. Tezkor yetkazib berish!",
+  description: "Restockb2b.uz - O'zbekistonda B2B qadoqlash materiallari va bir martalik idishlar ulgurji savdo platformasi. Toshkent bo'ylab gofrakarton qutilar, kraft paketlar, skotch, qog'oz stakanlar, plastik idishlar va xo'jalik mollarini eng arzon ulgurji (optom) narxlarda xarid qiling. Tezkor yetkazib berish!",
   keywords: [
     // Uzbek asosiy kalit so'zlar
     "qadoqlash materiallari", "qadoqlash toshkent", "qadoqlash materiallari optom", "qadoqlash vositalari",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     "plastik idishlar", "sous idishlari", "alyumin qoliplar",
     "xo'jalik mollari", "xo'jalik mollari optom", "maishiy kimyo toshkent", "tozalash vositalari",
     "salfetkalar", "tualet qog'ozi optom", "qog'oz sochiqlar",
-    "restock", "restock uz", "restock.uz", "restock toshkent", "restock uzbekistan", "b2b qadoqlash", "ulgurji savdo toshkent",
+    "restock", "restock b2b", "restock uz", "restock.uz", "restockb2b", "restockb2b.uz", "restock toshkent", "restock uzbekistan", "b2b qadoqlash", "ulgurji savdo toshkent",
     
     // Ruscha yuqori talabli kalit so'zlar (Yandex va Google RU)
     "упаковочные материалы ташкент", "упаковка оптом узбекистан", "упаковочные материалы",
@@ -39,11 +39,11 @@ export const metadata: Metadata = {
     "скотч упаковочный оптом", "стрейч пленка ташкент", "стрейч пленка оптом",
     "упаковка для фастфуда", "ланч боксы", "контейнеры для еды", "соусники пластиковые",
     "хозяйственные товары оптом", "бытовая химия ташкент", "салфетки бумажные оптом",
-    "ресток", "ресток уз", "b2b упаковка ташкент"
+    "ресток", "ресток б2б", "ресток уз", "b2b упаковка ташкент"
   ],
-  authors: [{ name: "Restock Uzbekistan", url: "https://restock.uz" }],
-  creator: "Restock Team",
-  publisher: "Restock.uz",
+  authors: [{ name: "Restock B2B Uzbekistan", url: "https://restockb2b.uz" }],
+  creator: "Restock B2B Team",
+  publisher: "Restockb2b.uz",
   category: "ecommerce",
   classification: "B2B E-commerce Wholesale Packaging and Tableware",
   robots: {
@@ -59,33 +59,33 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://restock.uz",
+    canonical: "https://restockb2b.uz",
     languages: {
-      "uz-UZ": "https://restock.uz",
-      "ru-RU": "https://restock.uz",
+      "uz-UZ": "https://restockb2b.uz",
+      "ru-RU": "https://restockb2b.uz",
     },
   },
   openGraph: {
     type: "website",
     locale: "uz_UZ",
-    url: "https://restock.uz",
-    siteName: "Restock.uz",
-    title: "Restock.uz - Qadoqlash Materiallari va Bir Martalik Idishlar Optom Toshkent",
+    url: "https://restockb2b.uz",
+    siteName: "Restockb2b.uz",
+    title: "Restock B2B - Qadoqlash Materiallari va Bir Martalik Idishlar Optom Toshkent",
     description: "B2B va ulgurji mijozlar uchun ishonchli hamkor. Qadoqlash materiallari, bir martalik idishlar, gofrakarton qutilar va xo'jalik mollari ulgurji narxda.",
     images: [
       {
-        url: "https://restock.uz/logo-full.png",
+        url: "https://restockb2b.uz/logo-full.png",
         width: 1200,
         height: 630,
-        alt: "Restock.uz B2B Qadoqlash Yechimlari",
+        alt: "Restock B2B Qadoqlash Yechimlari",
       }
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Restock.uz - O'zbekistonda B2B Qadoqlash Materiallari",
+    title: "Restock B2B - O'zbekistonda B2B Qadoqlash Materiallari",
     description: "B2B mijozlar uchun sifatli qadoqlash va bir martalik idishlar ulgurji yetkazib beruvchisi.",
-    images: ["https://restock.uz/logo-full.png"],
+    images: ["https://restockb2b.uz/logo-full.png"],
   },
   icons: {
     icon: [
